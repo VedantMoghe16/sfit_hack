@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables
+.env
+.env.local
+
+# Project Specific
+vajra-backend/sessions.json
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
