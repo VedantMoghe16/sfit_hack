@@ -7,11 +7,12 @@ const { getDistance, isPointInPolygon } = require("geolib");
 const twilio = require("twilio");
 
 const app = express();
+app.set("trust proxy", 1); // CRUCIAL for Render deployment to generate https:// links
 app.use(cors());
 app.use(express.json());
 
 // Serve frontend from same directory
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'frontend')));
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
@@ -182,7 +183,7 @@ function decodePolyline(encoded) {
  * then re-rank them by our combined safety+duration score.
  *
  * This is the money feature for judges:
- *   "Google returns the fastest routes; we re-rank them by safety."
+ * "Google returns the fastest routes; we re-rank them by safety."
  */
 async function fetchSafestRoute(startLat, startLng, destLat, destLng, mode = "walking") {
     if (!googleMapsKey) {
@@ -509,9 +510,12 @@ async function triggerSOS(session, req) {
     session.alertsSent = true;
 
     const trackingLink = buildTrackingLink(req, session.id);
+
+    // BUG FIX: Corrected the Google Maps URL generation
     const locStr = session.currentLocation
-        ? `https://www.google.com/maps?q=${session.currentLocation.lat},${session.currentLocation.lng}`
+        ? `https://maps.google.com/?q=${session.currentLocation.lat},${session.currentLocation.lng}`
         : "location unknown";
+
     const message = `🚨 VAJRA ALERT\n${session.alert}\nLast location: ${locStr}\nLive tracking: ${trackingLink}`;
 
     // 1. Notify n8n — n8n then handles Telegram/WhatsApp/email fan-out
@@ -598,7 +602,7 @@ setInterval(() => {
 }, 30000);
 
 // ========================
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "frontend", "index.html")));
 
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
