@@ -3,87 +3,112 @@
     "id": "hz_001",
     "name": "Low-Visibility Corridor",
     "riskScore": 7,
-    "activeHours": {
-      "start": 20,
-      "end": 6
-    },
+    "activeHours": { "start": 20, "end": 6 },
     "type": "infrastructure",
-    "description": "Poorly lit stretch, no sidewalks",
+    "description": "Poorly lit stretch, minimal streetlights",
     "polygon": [
-      {
-        "latitude": 19.0720,
-        "longitude": 72.8730
-      },
-      {
-        "latitude": 19.0740,
-        "longitude": 72.8760
-      },
-      {
-        "latitude": 19.0710,
-        "longitude": 72.8780
-      },
-      {
-        "latitude": 19.0690,
-        "longitude": 72.8750
-      }
+      { "latitude": 19.0720, "longitude": 72.8730 },
+      { "latitude": 19.0740, "longitude": 72.8760 },
+      { "latitude": 19.0710, "longitude": 72.8780 },
+      { "latitude": 19.0690, "longitude": 72.8750 }
     ]
   },
   {
     "id": "hz_002",
     "name": "High-Incident Area",
-    "riskScore": 8,
-    "activeHours": {
-      "start": 0,
-      "end": 24
-    },
+    "riskScore": 9,
+    "activeHours": { "start": 0, "end": 24 },
     "type": "crime",
     "description": "Multiple incident reports in past 30 days",
     "polygon": [
-      {
-        "latitude": 19.0830,
-        "longitude": 72.8880
-      },
-      {
-        "latitude": 19.0850,
-        "longitude": 72.8920
-      },
-      {
-        "latitude": 19.0820,
-        "longitude": 72.8940
-      },
-      {
-        "latitude": 19.0800,
-        "longitude": 72.8900
-      }
+      { "latitude": 19.0830, "longitude": 72.8880 },
+      { "latitude": 19.0850, "longitude": 72.8920 },
+      { "latitude": 19.0820, "longitude": 72.8940 },
+      { "latitude": 19.0800, "longitude": 72.8900 }
     ]
   },
   {
     "id": "hz_003",
     "name": "Low-Activity Zone",
     "riskScore": 5,
-    "activeHours": {
-      "start": 22,
-      "end": 5
-    },
+    "activeHours": { "start": 22, "end": 5 },
     "type": "crowdsourced",
     "description": "User-reported: deserted after 10PM",
     "polygon": [
-      {
-        "latitude": 19.0760,
-        "longitude": 72.8900
-      },
-      {
-        "latitude": 19.0780,
-        "longitude": 72.8930
-      },
-      {
-        "latitude": 19.0760,
-        "longitude": 72.8960
-      },
-      {
-        "latitude": 19.0740,
-        "longitude": 72.8930
-      }
+      { "latitude": 19.0760, "longitude": 72.8900 },
+      { "latitude": 19.0780, "longitude": 72.8930 },
+      { "latitude": 19.0760, "longitude": 72.8960 },
+      { "latitude": 19.0740, "longitude": 72.8930 }
+    ]
+  },
+  {
+    "id": "hz_004",
+    "name": "Flooding Prone / Waterlogging",
+    "riskScore": 6,
+    "activeHours": { "start": 0, "end": 24 },
+    "type": "weather",
+    "description": "Severe waterlogging during monsoons, impassable",
+    "polygon": [
+      { "latitude": 19.0650, "longitude": 72.8820 },
+      { "latitude": 19.0680, "longitude": 72.8850 },
+      { "latitude": 19.0650, "longitude": 72.8890 },
+      { "latitude": 19.0620, "longitude": 72.8850 }
+    ]
+  },
+  {
+    "id": "hz_005",
+    "name": "Accident Hotspot",
+    "riskScore": 8,
+    "activeHours": { "start": 18, "end": 23 },
+    "type": "traffic",
+    "description": "Blind curve with a history of pedestrian accidents",
+    "polygon": [
+      { "latitude": 19.0880, "longitude": 72.8750 },
+      { "latitude": 19.0910, "longitude": 72.8750 },
+      { "latitude": 19.0910, "longitude": 72.8780 },
+      { "latitude": 19.0880, "longitude": 72.8780 }
+    ]
+  },
+  {
+    "id": "hz_006",
+    "name": "Protest / Riot Zone",
+    "riskScore": 10,
+    "activeHours": { "start": 8, "end": 20 },
+    "type": "unrest",
+    "description": "Ongoing civil unrest reported, avoid area",
+    "polygon": [
+      { "latitude": 19.0550, "longitude": 72.8950 },
+      { "latitude": 19.0580, "longitude": 72.8970 },
+      { "latitude": 19.0560, "longitude": 72.9000 },
+      { "latitude": 19.0530, "longitude": 72.8980 }
+    ]
+  },
+  {
+    "id": "hz_007",
+    "name": "Construction Hazard",
+    "riskScore": 4,
+    "activeHours": { "start": 0, "end": 24 },
+    "type": "infrastructure",
+    "description": "Open manholes and debris reported",
+    "polygon": [
+      { "latitude": 19.0950, "longitude": 72.8850 },
+      { "latitude": 19.0970, "longitude": 72.8850 },
+      { "latitude": 19.0970, "longitude": 72.8880 },
+      { "latitude": 19.0950, "longitude": 72.8880 }
+    ]
+  },
+  {
+    "id": "hz_008",
+    "name": "Stray Animal Menace",
+    "riskScore": 6,
+    "activeHours": { "start": 19, "end": 6 },
+    "type": "animals",
+    "description": "Frequent reports of aggressive strays at night",
+    "polygon": [
+      { "latitude": 19.0700, "longitude": 72.8650 },
+      { "latitude": 19.0720, "longitude": 72.8680 },
+      { "latitude": 19.0680, "longitude": 72.8700 },
+      { "latitude": 19.0660, "longitude": 72.8670 }
     ]
   }
 ]

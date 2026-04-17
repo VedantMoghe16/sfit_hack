@@ -115,32 +115,39 @@ function densifyRoute(points, intervalMeters = 50) {
  * - corridorQuality: High / Medium / Low
  * - highRiskSegments: points where riskScore >= 6
  */
-function scoreRoute(routePoints, durationSeconds = null) {
+function scoreRoute(routePoints, durationSeconds = null, departureHour = null) {
     if (!routePoints || routePoints.length === 0) {
         return { score: 100, corridorQuality: "High", highRiskSegments: [], durationSeconds };
     }
 
     const dense = densifyRoute(routePoints, 50);
-    const hour = new Date().getHours();
+    const hour = departureHour !== null ? departureHour : new Date().getHours();
     let totalRisk = 0;
     let hazardHits = 0;
     const highRiskSegments = [];
 
+    // Time-based risk multiplier: higher risk at night
+    const timeMultiplier = (hour >= 22 || hour < 5) ? 1.5
+        : (hour >= 19 || hour < 6) ? 1.25
+        : 1.0;
+
     dense.forEach((pt, i) => {
-        const risk = getPointRiskScore(pt.lat, pt.lng, hour);
+        const risk = getPointRiskScore(pt.lat, pt.lng, hour) * timeMultiplier;
         totalRisk += risk;
         if (risk > 0) hazardHits++;
         if (risk >= 6) highRiskSegments.push({ index: i, lat: pt.lat, lng: pt.lng, riskScore: risk });
     });
 
     const avgRisk = totalRisk / dense.length;
-    const hazardRatio = hazardHits / dense.length; // fraction of route inside any hazard
-    // Penalize both average severity AND how much of the route is exposed
+    const hazardRatio = hazardHits / dense.length;
     const rawScore = 100 - (avgRisk * 8) - (hazardRatio * 20);
     const score = Math.max(0, Math.min(100, Math.round(rawScore)));
     const corridorQuality = score >= 80 ? "High" : score >= 55 ? "Medium" : "Low";
 
-    return { score, corridorQuality, highRiskSegments, durationSeconds, hazardRatio: +hazardRatio.toFixed(3) };
+    const timeLabel = (hour >= 22 || hour < 5) ? "Late night"
+        : (hour >= 19) ? "Evening" : (hour >= 6) ? "Daytime" : "Early morning";
+
+    return { score, corridorQuality, highRiskSegments, durationSeconds, hazardRatio: +hazardRatio.toFixed(3), timeLabel, departureHour: hour };
 }
 
 // ========================
@@ -185,7 +192,7 @@ function decodePolyline(encoded) {
  * This is the money feature for judges:
  * "Google returns the fastest routes; we re-rank them by safety."
  */
-async function fetchSafestRoute(startLat, startLng, destLat, destLng, mode = "walking") {
+async function fetchSafestRoute(startLat, startLng, destLat, destLng, mode = "walking", departureHour = null) {
     if (!googleMapsKey) {
         console.warn("GOOGLE_MAPS_API_KEY not set — using mock route");
         return {
@@ -215,7 +222,7 @@ async function fetchSafestRoute(startLat, startLng, destLat, destLng, mode = "wa
         const points = decodePolyline(route.overview_polyline.points);
         const duration = durations[idx];
         const distance = route.legs.reduce((s, l) => s + l.distance.value, 0);
-        const safety = scoreRoute(points, duration);
+        const safety = scoreRoute(points, duration, departureHour);
 
         // Normalized duration score (0-100): shorter = higher
         const durationScore = maxDur > 0 ? Math.round((1 - duration / maxDur) * 100) : 100;
@@ -321,7 +328,7 @@ app.post("/geocode", async (req, res) => {
 // ROUTE ANALYSIS (pre-trip preview)
 // ========================
 app.post("/analyze-route", async (req, res) => {
-    let { startLat, startLng, destLat, destLng, destinationText, startText, mode } = req.body;
+    let { startLat, startLng, destLat, destLng, destinationText, startText, mode, departureHour } = req.body;
 
     try {
         if (!startLat && startText) {
@@ -335,7 +342,7 @@ app.post("/analyze-route", async (req, res) => {
         if (!startLat || !destLat) {
             return res.status(400).json({ error: "need start + destination coords or text" });
         }
-        const result = await fetchSafestRoute(startLat, startLng, destLat, destLng, mode || "walking");
+        const result = await fetchSafestRoute(startLat, startLng, destLat, destLng, mode || "walking", departureHour);
         res.json({
             ...result,
             analyzedAt: new Date().toISOString(),
@@ -456,6 +463,31 @@ app.post("/location", async (req, res) => {
     session.pathHistory.push(newPoint);
     session.lastPing = Date.now();
 
+    // Dynamically update Live ETA and Distance if destination is known
+    if (googleMapsKey && session.destinationCoords) {
+        const now = Date.now();
+        if (!session.lastEtaFetch || (now - session.lastEtaFetch > 30000)) {
+            session.lastEtaFetch = now;
+            // Background fetch, we do not await it
+            const destLat = session.destinationCoords.lat;
+            const destLng = session.destinationCoords.lng;
+            const mode = session.mode || 'walking';
+            const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${destLat},${destLng}&mode=${mode}&key=${googleMapsKey}`;
+            
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === "OK" && data.rows[0].elements[0].status === "OK") {
+                        const elem = data.rows[0].elements[0];
+                        session.liveETA = elem.duration.text;
+                        session.liveDistance = elem.distance.text;
+                        saveSessions();
+                    }
+                })
+                .catch(e => console.error("Live ETA fetch failed:", e.message));
+        }
+    }
+
     // 1. Immediate SOS if inside a high-risk zone
     const pointRisk = getPointRiskScore(lat, lng);
     if (pointRisk >= 8) {
@@ -553,6 +585,65 @@ async function triggerSOS(session, req) {
         }
     }
 }
+
+// ========================
+// NEARBY POLICE STATION
+// ========================
+app.get("/nearby-police", async (req, res) => {
+    const { lat, lng } = req.query;
+    if (!lat || !lng) return res.status(400).json({ error: "lat and lng required" });
+    if (!googleMapsKey) return res.json({ fallback: true, number: "112", name: "Emergency Services (112)", note: "Google Maps key not configured" });
+
+    try {
+        // Search for police stations within 5km
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`
+            + `?location=${lat},${lng}`
+            + `&radius=5000`
+            + `&type=police`
+            + `&key=${googleMapsKey}`;
+        const r = await fetch(url);
+        const data = await r.json();
+
+        if (data.status !== "OK" || !data.results?.length) {
+            return res.json({ fallback: true, number: "112", name: "Emergency Services (112)", note: "No nearby police stations found" });
+        }
+
+        const station = data.results[0];
+        let phone = null;
+
+        // Try to get phone number via Place Details
+        if (station.place_id) {
+            try {
+                const detailUrl = `https://maps.googleapis.com/maps/api/place/details/json`
+                    + `?place_id=${station.place_id}`
+                    + `&fields=formatted_phone_number,international_phone_number`
+                    + `&key=${googleMapsKey}`;
+                const detailRes = await fetch(detailUrl);
+                const detailData = await detailRes.json();
+                phone = detailData.result?.international_phone_number || detailData.result?.formatted_phone_number || null;
+            } catch (e) {
+                console.error("Place details failed:", e.message);
+            }
+        }
+
+        const dist = getDistance(
+            { latitude: parseFloat(lat), longitude: parseFloat(lng) },
+            { latitude: station.geometry.location.lat, longitude: station.geometry.location.lng }
+        );
+
+        res.json({
+            fallback: !phone,
+            name: station.name || "Nearby Police Station",
+            number: phone || "112",
+            address: station.vicinity || "",
+            distance: dist,
+            location: station.geometry.location
+        });
+    } catch (err) {
+        console.error("Nearby police error:", err.message);
+        res.json({ fallback: true, number: "112", name: "Emergency Services (112)", note: err.message });
+    }
+});
 
 // ========================
 // TRACK / SESSIONS
