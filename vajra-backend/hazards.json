@@ -1,0 +1,89 @@
+[
+  {
+    "id": "hz_001",
+    "name": "Low-Visibility Corridor",
+    "riskScore": 7,
+    "activeHours": {
+      "start": 20,
+      "end": 6
+    },
+    "type": "infrastructure",
+    "description": "Poorly lit stretch, no sidewalks",
+    "polygon": [
+      {
+        "latitude": 19.0720,
+        "longitude": 72.8730
+      },
+      {
+        "latitude": 19.0740,
+        "longitude": 72.8760
+      },
+      {
+        "latitude": 19.0710,
+        "longitude": 72.8780
+      },
+      {
+        "latitude": 19.0690,
+        "longitude": 72.8750
+      }
+    ]
+  },
+  {
+    "id": "hz_002",
+    "name": "High-Incident Area",
+    "riskScore": 8,
+    "activeHours": {
+      "start": 0,
+      "end": 24
+    },
+    "type": "crime",
+    "description": "Multiple incident reports in past 30 days",
+    "polygon": [
+      {
+        "latitude": 19.0830,
+        "longitude": 72.8880
+      },
+      {
+        "latitude": 19.0850,
+        "longitude": 72.8920
+      },
+      {
+        "latitude": 19.0820,
+        "longitude": 72.8940
+      },
+      {
+        "latitude": 19.0800,
+        "longitude": 72.8900
+      }
+    ]
+  },
+  {
+    "id": "hz_003",
+    "name": "Low-Activity Zone",
+    "riskScore": 5,
+    "activeHours": {
+      "start": 22,
+      "end": 5
+    },
+    "type": "crowdsourced",
+    "description": "User-reported: deserted after 10PM",
+    "polygon": [
+      {
+        "latitude": 19.0760,
+        "longitude": 72.8900
+      },
+      {
+        "latitude": 19.0780,
+        "longitude": 72.8930
+      },
+      {
+        "latitude": 19.0760,
+        "longitude": 72.8960
+      },
+      {
+        "latitude": 19.0740,
+        "longitude": 72.8930
+      }
+    ]
+  }
+]

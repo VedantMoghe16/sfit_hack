@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>VAJRA — Guardian Path</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07070a;
+            --bg-elevated: #0f0f14;
+            --surface: rgba(14, 14, 20, 0.94);
+            --surface-raised: rgba(20, 20, 28, 0.97);
+
+            /* Acid-yellow primary accent */
+            --accent: #e8ff47;
+            --accent-dim: rgba(232, 255, 71, 0.18);
+            --accent-glow: rgba(232, 255, 71, 0.25);
+
+            /* Semantic colours */
+            --safe: #3dff9a;
+            --safe-dim: rgba(61, 255, 154, 0.15);
+            --danger: #ff3d3d;
+            --danger-dim: rgba(255, 61, 61, 0.15);
+            --warn: #ffad3d;
+            --warn-dim: rgba(255, 173, 61, 0.15);
+            --blue: #47c4ff;
+            --blue-dim: rgba(71, 196, 255, 0.15);
+
+            --text: #f0f0f8;
+            --text-dim: rgba(240, 240, 248, 0.55);
+            --text-faint: rgba(240, 240, 248, 0.32);
+            --glass: rgba(232, 255, 71, 0.04);
+            --glass-strong: rgba(232, 255, 71, 0.08);
+            --border: rgba(232, 255, 71, 0.08);
+            --border-strong: rgba(232, 255, 71, 0.16);
+
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+            --font-display: 'Syne', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-display);
+            background: var(--bg);
+            color: var(--text);
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #app {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR ===== */
+        #topbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: calc(var(--safe-top) + 14px) 16px 14px;
+            background: linear-gradient(to bottom, rgba(7, 7, 10, 0.85) 0%, rgba(7, 7, 10, 0.5) 60%, transparent 100%);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            color: #07070a;
+            letter-spacing: -1px;
+            box-shadow: 0 6px 24px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .brand-text .name {
+            font-weight: 800;
+            font-size: 17px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .brand-text .sub {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .status-chip {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 100px;
+            background: var(--surface);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border-strong);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            color: var(--text-dim);
+        }
+
+        .status-chip .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warn);
+            position: relative;
+        }
+
+        .status-chip .pulse-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.4;
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        .status-safe {
+            color: var(--safe);
+            border-color: rgba(61, 255, 154, 0.35);
+            background: rgba(61, 255, 154, 0.05);
+        }
+
+        .status-safe .pulse-dot {
+            background: var(--safe);
+        }
+
+        .status-risk {
+            color: var(--danger);
+            border-color: rgba(255, 61, 61, 0.5);
+            background: rgba(255, 61, 61, 0.1);
+            animation: chip-pulse 1.2s ease-in-out infinite;
+        }
+
+        .status-risk .pulse-dot {
+            background: var(--danger);
+        }
+
+        .status-nosignal {
+            color: var(--warn);
+            border-color: rgba(255, 173, 61, 0.3);
+        }
+
+        .status-nosignal .pulse-dot {
+            background: var(--warn);
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: .6;
+            }
+
+            100% {
+                transform: scale(2.4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes chip-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 61, 61, .4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(255, 61, 61, 0);
+            }
+        }
+
+        /* ===== ALERT BANNER ===== */
+        #alert-banner {
+            position: absolute;
+            top: calc(var(--safe-top) + 72px);
+            left: 12px;
+            right: 12px;
+            z-index: 49;
+            background: linear-gradient(135deg, rgba(255, 61, 61, .97), rgba(200, 28, 28, .9));
+            color: white;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 28px rgba(255, 61, 61, .4);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slide-down .4s cubic-bezier(.2, .9, .3, 1.2);
+        }
+
+        #alert-banner.visible {
+            display: flex;
+        }
+
+        #alert-banner .icon {
+            font-size: 18px;
+        }
+
+        @keyframes slide-down {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== MAP ===== */
+        #map {
+            flex: 1;
+            width: 100%;
+            min-height: 0;
+            background: #0a0a0f;
+        }
+
+        .map-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-dim);
+            background-image:
+                radial-gradient(circle at 30% 20%, rgba(232, 255, 71, .05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(71, 196, 255, .05) 0%, transparent 50%),
+                linear-gradient(rgba(232, 255, 71, .025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(232, 255, 71, .025) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+        }
+
+        .map-fallback .pin {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 16px rgba(232, 255, 71, .35));
+        }
+
+        /* ===== FABS ===== */
+        .map-fabs {
+            position: absolute;
+            right: 14px;
+            top: calc(var(--safe-top) + 80px);
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fab {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-strong);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform .15s ease, background .2s ease;
+            font-size: 17px;
+        }
+
+        .fab:active {
+            transform: scale(.9);
+            background: var(--glass-strong);
+        }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            position: absolute;
+            left: 14px;
+            bottom: calc(var(--sheet-peek, 280px) + 14px);
+            z-index: 30;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 140px;
+            letter-spacing: 1px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+        }
+
+        .legend-item .dot {
+            width: 10px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .legend-item .dot.user {
+            background: var(--blue);
+        }
+
+        .legend-item .dot.route {
+            background: var(--accent);
+        }
+
+        /* ===== BOTTOM SHEET ===== */
+        #sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            background: var(--surface);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-top: 1px solid var(--border-strong);
+            border-radius: 28px 28px 0 0;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, .65), 0 -1px 0 rgba(232, 255, 71, .06);
+            padding: 8px 18px calc(var(--safe-bottom) + 18px);
+            transition: transform .35s cubic-bezier(.2, .9, .3, 1);
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #sheet.collapsed {
+            transform: translateY(calc(100% - 150px));
+        }
+
+        .sheet-handle {
+            width: 100%;
+            padding: 8px 0 10px;
+            display: flex;
+            justify-content: center;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .sheet-handle .bar {
+            width: 40px;
+            height: 4px;
+            border-radius: 100px;
+            background: var(--border-strong);
+        }
+
+        .sheet-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sheet-title h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            color: var(--text);
+        }
+
+        .sheet-title .meta {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--safe);
+            box-shadow: 0 0 8px var(--safe);
+            animation: blink 1.6s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .25;
+            }
+        }
+
+        .time-pill {
+            flex-shrink: 0;
+            padding: 6px 10px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* ===== INFO CARDS ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .info-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(232, 255, 71, .03) 100%);
+            pointer-events: none;
+        }
+
+        .info-card label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .info-card .value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .info-card .sub {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-faint);
+            margin-top: 3px;
+            letter-spacing: .5px;
+        }
+
+        /* ===== SOS BUTTON ===== */
+        .sos-btn {
+            width: 100%;
+            padding: 17px;
+            border-radius: 18px;
+            border: none;
+            background: var(--danger);
+            color: white;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 28px rgba(255, 61, 61, .35), inset 0 1px 0 rgba(255, 255, 255, .2);
+            transition: transform .1s ease, box-shadow .2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sos-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .12), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 100%;
+            }
+        }
+
+        .sos-btn:active {
+            transform: scale(.97);
+            box-shadow: 0 4px 14px rgba(255, 61, 61, .4);
+        }
+
+        /* ===== ACTION GRID ===== */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .action-btn {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 12px 4px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: transform .1s ease, background .2s ease, color .2s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(.93);
+            background: var(--glass-strong);
+        }
+
+        .action-btn:hover {
+            color: var(--accent);
+            border-color: var(--border-strong);
+        }
+
+        .action-btn .icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .action-btn.call .icon {
+            color: var(--safe);
+        }
+
+        .action-btn.maps .icon {
+            color: var(--blue);
+        }
+
+        .action-btn.gps .icon {
+            color: var(--accent);
+        }
+
+        .action-btn.share .icon {
+            color: var(--warn);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin: 0 -18px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 4px;
+            color: var(--text-faint);
+            font-family: var(--font-mono);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            transition: color .15s ease;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item:active {
+            transform: scale(.92);
+        }
+
+        .nav-item .icon {
+            font-size: 17px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: calc(var(--safe-bottom) + 110px);
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: rgba(10, 10, 14, .97);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-strong);
+            color: var(--accent);
+            padding: 11px 18px;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 1px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease, transform .25s ease;
+            max-width: 85%;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .78);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            padding-bottom: calc(20px + var(--safe-bottom));
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fade-in .2s ease;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-strong);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 440px;
+            width: 100%;
+            animation: slide-up .3s cubic-bezier(.2, .9, .3, 1.1);
+        }
+
+        @keyframes slide-up {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-card h3 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--danger);
+            letter-spacing: -.5px;
+        }
+
+        .modal-card p {
+            margin: 0 0 20px;
+            color: var(--text-dim);
+            font-size: 12px;
+            line-height: 1.7;
+            font-family: var(--font-mono);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform .1s ease;
+        }
+
+        .modal-btn:active {
+            transform: scale(.97);
+        }
+
+        .modal-btn.cancel {
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--border-strong);
+        }
+
+        .modal-btn.confirm {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 61, 61, .35);
+        }
+
+        /* ===== AUTOMATION PANEL ===== */
+        .automation-panel {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .automation-panel.active {
+            display: flex;
+        }
+
+        .auto-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auto-card .auto-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .auto-card .auto-icon.tg {
+            background: var(--blue-dim);
+            color: var(--blue);
+        }
+
+        .auto-card .auto-icon.n8 {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .auto-card .auto-icon.tw {
+            background: var(--safe-dim);
+            color: var(--safe);
+        }
+
+        .auto-card .auto-icon.dm {
+            background: var(--warn-dim);
+            color: var(--warn);
+        }
+
+        .auto-card .auto-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .auto-card .auto-body .title {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .auto-card .auto-body .desc {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 2px;
+            letter-spacing: .5px;
+        }
+
+        .auto-status {
+            padding: 4px 9px;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .auto-status.live {
+            background: var(--safe-dim);
+            color: var(--safe);
+            border: 1px solid rgba(61, 255, 154, .3);
+        }
+
+        .auto-status.armed {
+            background: var(--warn-dim);
+            color: var(--warn);
+            border: 1px solid rgba(255, 173, 61, .3);
+        }
+
+        #sessions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 40vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        @media (min-width: 600px) {
+            #sheet {
+                left: 50%;
+                transform: translateX(-50%);
+                max-width: 480px;
+                border-radius: 28px;
+                bottom: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, .7);
+            }
+
+            #sheet.collapsed {
+                transform: translateX(-50%) translateY(calc(100% - 150px));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <header id="topbar">
+            <div class="brand">
+                <div class="brand-logo">V</div>
+                <div class="brand-text">
+                    <span class="name">VAJRA</span>
+                    <span class="sub">Guardian Path</span>
+                </div>
+            </div>
+            <div id="status-chip" class="status-chip status-nosignal">
+                <span class="pulse-dot"></span>
+                <span id="status-label">Init</span>
+            </div>
+        </header>
+
+        <div id="alert-banner">
+            <span class="icon">⚠</span>
+            <span id="alert-text">Alert</span>
+        </div>
+
+        <div class="map-fabs">
+            <button class="fab" onclick="recenterMap()" title="Recenter">⊕</button>
+            <button class="fab" onclick="toggleSheet()" title="Toggle panel">☰</button>
+        </div>
+
+        <div id="map">
+            <div class="map-fallback" id="map-fallback">
+                <div class="pin">📍</div>
+                <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-dim);letter-spacing:1px;">
+                    Initializing map…</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="dot route"></div>Guardian route
+            </div>
+            <div class="legend-item">
+                <div class="dot user"></div>User path
+            </div>
+        </div>
+
+        <div id="sheet">
+            <div class="sheet-handle" id="sheet-handle">
+                <div class="bar"></div>
+            </div>
+
+            <div class="sheet-head">
+                <div class="sheet-title">
+                    <h1 id="userName">Awaiting trip…</h1>
+                    <div class="meta">
+                        <span class="live-dot"></span>
+                        <span id="userPhone">No active session</span>
+                    </div>
+                </div>
+                <div class="time-pill" id="lastUpdated">— —</div>
+            </div>
+
+            <!-- DASHBOARD PANEL -->
+            <div class="panel active" id="panel-dash">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <label>Destination</label>
+                        <div class="value" id="destText">—</div>
+                        <div class="sub" id="destSub">Not set</div>
+                    </div>
+                    <div class="info-card">
+                        <label>Corridor</label>
+                        <div class="value" id="distText">Tracking</div>
+                        <div class="sub" id="distSub">Awaiting GPS</div>
+                    </div>
+                </div>
+
+                <button class="sos-btn" onclick="confirmSOS()">
+                    <span>🚨</span>
+                    <span>Trigger Emergency SOS</span>
+                </button>
+
+                <div class="action-grid">
+                    <a href="#" id="callBtn" class="action-btn call">
+                        <span class="icon">📞</span><span>Call</span>
+                    </a>
+                    <button class="action-btn maps" onclick="openExternalMap()">
+                        <span class="icon">🧭</span><span>Maps</span>
+                    </button>
+                    <button class="action-btn gps" onclick="copyCoords()">
+                        <span class="icon">📍</span><span>GPS</span>
+                    </button>
+                    <button class="action-btn share" onclick="shareLink()">
+                        <span class="icon">↗</span><span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AUTOMATION PANEL -->
+            <div class="panel" id="panel-auto">
+                <div class="automation-panel active">
+                    <div class="auto-card">
+                        <div class="auto-icon tg">✈</div>
+                        <div class="auto-body">
+                            <div class="title">Telegram Bot</div>
+                            <div class="desc">Receives /start · /track · /sos</div>
+                        </div>
+                        <span class="auto-status live">LIVE</span>
+                    </div>
+                    <div class="auto-card">
+                        <div class="auto-icon n8">⚡</div>
+                        <div class="auto-body">
+                            <div class="title">n8n Workflow</div>
+                            <div class="desc" id="n8n-desc">Safe-corridor + SOS routing</div>
+                        </div>
+                        <span class="auto-status live">LIVE</span>
+                    </div>
+                    <div class="auto-card">
+                        <div class="auto-icon tw">✓</div>
+                        <div class="auto-body">
+                            <div class="title">Twilio SMS + Call</div>
+                            <div class="desc">Escalation to emergency contacts</div>
+                        </div>
+                        <span class="auto-status live">LIVE</span>
+                    </div>
+                    <div class="auto-card" style="border-style:dashed;opacity:.75;">
+                        <div class="auto-icon dm">◉</div>
+                        <div class="auto-body">
+                            <div class="title">Dead-man Switch</div>
+                            <div class="desc">Auto-alert after 3 min silence</div>
+                        </div>
+                        <span class="auto-status armed">ARMED</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SESSIONS PANEL -->
+            <div class="panel" id="panel-sessions">
+                <div id="sessions-list">
+                    <div
+                        style="text-align:center;color:var(--text-dim);font-family:var(--font-mono);font-size:11px;padding:24px 0;letter-spacing:1px;">
+                        NO ACTIVE SESSIONS
+                    </div>
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-panel="panel-dash">
+                    <span class="icon">🛡</span><span>Track</span>
+                </button>
+                <button class="nav-item" data-panel="panel-sessions">
+                    <span class="icon">📋</span><span>Sessions</span>
+                </button>
+                <button class="nav-item" data-panel="panel-auto">
+                    <span class="icon">⚡</span><span>Auto</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-card">
+            <h3>🚨 Confirm Emergency</h3>
+            <p>This will immediately notify all emergency contacts via SMS &amp; voice call, trigger the n8n workflow,
+                and escalate to the dashboard.</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn confirm" onclick="triggerEmergency()">Confirm SOS</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let map, userMarker, expectedPathLine, actualPathLine;
+        let lastLocation = null, lastPingTime = null, sheetCollapsed = false;
+
+        const darkStyle = [
+            { elementType: "geometry", stylers: [{ color: "#0d0d14" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#07070a" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#4a4a5a" }] },
+            { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#6b6b80" }] },
+            { featureType: "poi", stylers: [{ visibility: "off" }] },
+            { featureType: "road", elementType: "geometry", stylers: [{ color: "#1a1a26" }] },
+            { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#0f0f18" }] },
+            { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#6b6b80" }] },
+            { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#252535" }] },
+            { featureType: "transit", stylers: [{ visibility: "off" }] },
+            { featureType: "water", elementType: "geometry", stylers: [{ color: "#080c14" }] }
+        ];
+
+        async function loadGoogleMaps() {
+            try {
+                const cfg = await fetch('/config').then(r => r.json());
+                const key = cfg.googleMapsKey;
+                if (!key) throw new Error("No key");
+                return new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=visualization&callback=initMap`;
+                    s.async = true; s.defer = true; s.onerror = reject;
+                    const orig = window.initMap;
+                    window.initMap = () => { if (orig) orig(); resolve(); };
+                    document.head.appendChild(s);
+                });
+            } catch (e) {
+                document.getElementById('map-fallback').innerHTML =
+                    '<div class="pin">📍</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);letter-spacing:1px;">Map unavailable — tracking active</div>';
+            }
+        }
+
+        function initMap() {
+            const fb = document.getElementById('map-fallback');
+            if (fb) fb.style.display = 'none';
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 19.076, lng: 72.877 }, zoom: 14,
+                styles: darkStyle,
+                disableDefaultUI: true, gestureHandling: 'greedy', clickableIcons: false
+            });
+            userMarker = new google.maps.Marker({
+                position: { lat: 19.076, lng: 72.877 }, map,
+                icon: { path: google.maps.SymbolPath.CIRCLE, scale: 9, fillColor: "#47c4ff", fillOpacity: 1, strokeWeight: 3, strokeColor: "#ffffff" }
+            });
+            expectedPathLine = new google.maps.Polyline({ path: [], geodesic: true, strokeColor: "#e8ff47", strokeOpacity: .85, strokeWeight: 4, map });
+            actualPathLine = new google.maps.Polyline({ path: [], geodesic: true, strokeColor: "#47c4ff", strokeOpacity: .7, strokeWeight: 3, map });
+
+            // Render hazard zones if available
+            loadHazardOverlay();
+        }
+
+        async function loadHazardOverlay() {
+            try {
+                const data = await fetch('/hazards').then(r => r.json());
+                const zones = data.zones || [];
+                const now = new Date().getHours();
+                zones.forEach(z => {
+                    const { start, end } = z.activeHours;
+                    const active = start <= end ? now >= start && now < end : now >= start || now < end;
+                    const c = z.riskScore >= 7 ? '#ff3d3d' : z.riskScore >= 5 ? '#ffad3d' : '#47c4ff';
+                    new google.maps.Polygon({
+                        paths: z.polygon.map(p => ({ lat: p.latitude, lng: p.longitude })),
+                        strokeColor: c, strokeOpacity: active ? .5 : .2,
+                        strokeWeight: 1.5,
+                        fillColor: c, fillOpacity: active ? (.08 + z.riskScore / 10 * .14) : .04,
+                        map
+                    });
+                });
+            } catch { }
+        }
+
+        function confirmSOS() { document.getElementById('modal').classList.add('show'); }
+        function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+        async function triggerEmergency() {
+            closeModal();
+            const sid = location.hash.replace('#', '').split('?')[0];
+            if (!sid) { showToast("No active session"); return; }
+            showToast("Escalating…");
+            try {
+                const r = await fetch('/sos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: sid, escalatedByContact: true }) });
+                const d = await r.json();
+                d.success ? (showToast("🚨 Emergency escalated"), fetchData()) : showToast("Failed — call 112");
+            } catch { showToast("Network error — call 112"); }
+        }
+
+        async function fetchData() {
+            const sid = location.hash.replace('#', '').split('?')[0];
+            if (!sid) { setStatusChip({ status: "AWAITING" }); loadAllSessions(); return; }
+            try {
+                const r = await fetch(`/track/${sid}`);
+                if (!r.ok) { if (r.status === 404) setStatusChip({ status: "SCANNING" }); return; }
+                updateUI(await r.json());
+            } catch { setStatusChip({ status: "OFFLINE" }); }
+        }
+
+        async function loadAllSessions() {
+            try { const r = await fetch('/sessions'); if (r.ok) renderSessions(await r.json()); } catch { }
+        }
+
+        function renderSessions(all) {
+            const list = document.getElementById('sessions-list');
+            const arr = Array.isArray(all) ? all : Object.values(all || {});
+            if (!arr.length) return;
+            list.innerHTML = arr.slice(-15).reverse().map(s => {
+                const c = s.status === 'RISK' ? 'var(--danger)' : s.status === 'ACTIVE' ? 'var(--safe)' : 'var(--warn)';
+                const score = s.safetyScore ? `<span style="font-family:var(--font-mono);font-size:10px;color:var(--accent);font-weight:700;">${s.safetyScore.score}</span>` : '';
+                return `<a href="#${s.id}" onclick="location.reload()" style="text-decoration:none;color:inherit;
+                background:var(--glass);border:1px solid var(--border);padding:12px 14px;border-radius:14px;
+                display:flex;align-items:center;gap:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(s.destination || '—')}</div>
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-faint);letter-spacing:1px;margin-top:2px;">#${s.id.slice(-8)} · ${s.status}</div>
+                </div>
+                ${score}
+                <span style="color:var(--accent);font-size:16px;">›</span>
+            </a>`;
+            }).join('');
+        }
+
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        function updateUI(data) {
+            document.getElementById("destText").innerText = data.destination || "Unknown";
+            document.getElementById("destSub").innerText = data.currentLocation
+                ? `${data.currentLocation.lat.toFixed(4)}, ${data.currentLocation.lng.toFixed(4)}` : "No GPS yet";
+            document.getElementById("userName").innerText = "Active trip";
+            document.getElementById("userPhone").innerText = data.phone || `#${(data.id || '').slice(-8)}`;
+
+            const callBtn = document.getElementById("callBtn");
+            if (data.phone) callBtn.href = `tel:${data.phone}`;
+
+            const q = data.safetyScore?.corridorQuality;
+            document.getElementById("distText").innerText =
+                data.status === "RISK" ? "AT RISK"
+                    : data.status === "ACTIVE" ? (q ? `${q} corridor` : "On route")
+                        : data.status === "NO_SIGNAL" ? "No signal"
+                            : data.status === "WAITING" ? "Waiting" : "Tracking";
+
+            document.getElementById("distSub").innerText = data.safetyScore
+                ? `Score: ${data.safetyScore.score}/100`
+                : (data.deviationCount ? `Deviations: ${data.deviationCount}` : "Corridor clear");
+
+            if (data.currentLocation && map && userMarker) {
+                const pos = { lat: data.currentLocation.lat, lng: data.currentLocation.lng };
+                userMarker.setPosition(pos);
+                if (data.pathHistory) actualPathLine.setPath(data.pathHistory.map(p => ({ lat: p.lat, lng: p.lng })));
+                if (data.expectedRoute) expectedPathLine.setPath(data.expectedRoute.map(p => ({ lat: p.lat, lng: p.lng })));
+                if (!lastPingTime) map.setCenter(pos);
+                lastPingTime = Date.now();
+                lastLocation = [pos.lat, pos.lng];
+            }
+            setStatusChip(data);
+        }
+
+        function setStatusChip(data) {
+            const chip = document.getElementById("status-chip");
+            const lbl = document.getElementById("status-label");
+            const banner = document.getElementById("alert-banner");
+            let cls = "status-nosignal", label = data.status || "NO SIGNAL";
+            if (data.status === "ACTIVE" || data.status === "SAFE") { cls = "status-safe"; label = "Safe"; }
+            else if (data.status === "RISK" || data.status === "ALERT") { cls = "status-risk"; label = "Alert"; }
+            else if (data.status === "NO_SIGNAL") { cls = "status-nosignal"; label = "No signal"; }
+            else if (data.status === "AWAITING") { cls = "status-nosignal"; label = "Awaiting"; }
+            else if (data.status === "SCANNING") { cls = "status-nosignal"; label = "Scanning"; }
+            else if (data.status === "OFFLINE") { cls = "status-nosignal"; label = "Offline"; }
+            else if (data.status === "WAITING") { cls = "status-nosignal"; label = "Waiting"; }
+            chip.className = `status-chip ${cls}`;
+            lbl.innerText = label;
+            if (data.alert) { document.getElementById("alert-text").innerText = data.alert; banner.classList.add("visible"); }
+            else banner.classList.remove("visible");
+        }
+
+        function updateTimer() {
+            if (!lastPingTime) { document.getElementById("lastUpdated").innerText = "— —"; return; }
+            const s = Math.floor((Date.now() - lastPingTime) / 1000);
+            document.getElementById("lastUpdated").innerText = s < 60 ? `${s}s ago` : `${Math.floor(s / 60)}m ago`;
+        }
+
+        function recenterMap() {
+            if (lastLocation && map) { map.panTo({ lat: lastLocation[0], lng: lastLocation[1] }); map.setZoom(15); showToast("Recentered"); }
+            else showToast("No GPS yet");
+        }
+
+        function toggleSheet() { sheetCollapsed = !sheetCollapsed; document.getElementById('sheet').classList.toggle('collapsed', sheetCollapsed); }
+
+        function openExternalMap() {
+            lastLocation ? window.open(`https://www.google.com/maps?q=${lastLocation[0]},${lastLocation[1]}`, '_blank') : showToast("No location yet");
+        }
+
+        function copyCoords() {
+            if (lastLocation) { const t = `${lastLocation[0]}, ${lastLocation[1]}`; navigator.clipboard?.writeText(t).then(() => showToast("GPS copied"), () => showToast(t)); }
+            else showToast("No location yet");
+        }
+
+        async function shareLink() {
+            const url = location.href;
+            if (navigator.share) { try { await navigator.share({ title: 'VAJRA tracking', url }); } catch { } }
+            else { navigator.clipboard?.writeText(url); showToast("Link copied"); }
+        }
+
+        function showToast(msg, ms = 2400) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(showToast._t);
+            showToast._t = setTimeout(() => t.classList.remove('show'), ms);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(btn.dataset.panel)?.classList.add('active');
+            });
+        });
+
+        (function () {
+            const handle = document.getElementById('sheet-handle');
+            const sheet = document.getElementById('sheet');
+            let startY = 0;
+            handle.addEventListener('pointerdown', e => { startY = e.clientY; handle.setPointerCapture(e.pointerId); });
+            handle.addEventListener('pointerup', e => {
+                const dy = e.clientY - startY;
+                if (Math.abs(dy) > 30) { sheetCollapsed = dy > 0; sheet.classList.toggle('collapsed', sheetCollapsed); }
+                else toggleSheet();
+            });
+        })();
+
+        document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+        window.onload = async () => {
+            await loadGoogleMaps();
+            fetchData();
+            setInterval(fetchData, 5000);
+            setInterval(updateTimer, 1000);
+        };
+    </script>
+</body>
+
+</html>
