@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve frontend from same directory
-app.use(express.static(path.join(__dirname, 'frontend')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
@@ -602,7 +602,7 @@ setInterval(() => {
 }, 30000);
 
 // ========================
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "frontend", "index.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../frontend", "index.html")));
 
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
