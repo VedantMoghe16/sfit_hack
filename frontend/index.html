@@ -1300,105 +1300,103 @@
         }
 
         /* ────────────────────────────────────────────
-           ETA HERO — with client-side fallback
+           ETA HERO — always from Google Distance Matrix (real-time)
+           No fake speed calculations. Either we have a real Google
+           ETA, or we show "Calculating…".
            ──────────────────────────────────────────── */
+        let lastEtaResult = null;  // cache last successful ETA to avoid flicker between fetches
+        let lastEtaFetchAt = 0;
+        let etaFetchInFlight = false;
+
         function updateEtaHero(data) {
             const hero = document.getElementById("eta-hero");
 
-            // 1. Prefer server-computed live ETA (from Google Distance Matrix)
+            // If the /track payload already has live ETA (server pushed it recently), render it
             if (data.liveETA && data.liveDistance && data.liveDurationValue) {
-                showEta(data.liveETA, data.liveDistance, data.liveDurationValue);
+                lastEtaResult = {
+                    durationText: data.liveETA,
+                    distanceText: data.liveDistance,
+                    durationSeconds: data.liveDurationValue
+                };
+                showEta(lastEtaResult);
                 return;
             }
 
-            // 2. Fallback: estimate from expectedRoute + currentLocation
-            if (data.currentLocation && data.expectedRoute && data.expectedRoute.length > 1) {
-                const est = estimateEtaFromRoute(data.currentLocation, data.expectedRoute, data.mode || 'walking');
-                if (est) {
-                    showEta(est.textLabel, est.distanceLabel, est.durationSeconds);
-                    return;
-                }
+            // If we have a recent cached value, show it so the number doesn't flicker
+            if (lastEtaResult) {
+                showEta(lastEtaResult);
+                return;
             }
 
-            // 3. Fallback: straight-line estimate if we at least have destination coords
+            // Nothing yet — show a friendly placeholder (no fake math)
             if (data.currentLocation && data.destinationCoords) {
-                const dMeters = haversineMeters(
-                    data.currentLocation.lat, data.currentLocation.lng,
-                    data.destinationCoords.lat, data.destinationCoords.lng
-                );
-                const mode = data.mode || 'walking';
-                // walking ~5 km/h ≈ 1.4 m/s; driving in city ~7 m/s
-                const speed = mode === 'driving' ? 7 : 1.4;
-                const seconds = Math.round(dMeters / speed);
-                showEta(secondsToLabel(seconds), metersToDistanceLabel(dMeters), seconds);
-                return;
+                showEtaPlaceholder("Calculating…");
+            } else if (!data.currentLocation) {
+                showEtaPlaceholder("Waiting for location…");
+            } else {
+                hero.style.display = "none";
             }
-
-            // 4. No data yet
-            hero.style.display = "none";
         }
 
-        function showEta(textLabel, distanceLabel, durationSeconds) {
+        function showEtaPlaceholder(msg) {
             const hero = document.getElementById("eta-hero");
-            const arrivalDate = new Date(Date.now() + durationSeconds * 1000);
+            document.getElementById("etaMainText").innerText = msg;
+            document.getElementById("etaDistance").innerText = "—";
+            document.getElementById("etaArrivalTime").innerText = "—";
+            hero.classList.remove('warn', 'risk');
+            hero.style.display = "block";
+        }
+
+        function showEta(eta) {
+            const hero = document.getElementById("eta-hero");
+            const arrivalDate = new Date(Date.now() + eta.durationSeconds * 1000);
             const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
-            document.getElementById("etaMainText").innerText = textLabel;
-            document.getElementById("etaDistance").innerText = distanceLabel;
+            document.getElementById("etaMainText").innerText = eta.durationText;
+            document.getElementById("etaDistance").innerText = eta.distanceText;
             document.getElementById("etaArrivalTime").innerText = arrivalStr;
 
-            // Color the hero based on duration (long duration → warn)
+            // Color the hero based on duration and status
             hero.classList.remove('warn', 'risk');
-            if (durationSeconds > 45 * 60) hero.classList.add('warn');
-            if (currentSessionData?.status === 'RISK') { hero.classList.remove('warn'); hero.classList.add('risk'); }
+            if (eta.durationSeconds > 45 * 60) hero.classList.add('warn');
+            if (currentSessionData?.status === 'RISK') {
+                hero.classList.remove('warn');
+                hero.classList.add('risk');
+            }
 
             hero.style.display = "block";
         }
 
-        function estimateEtaFromRoute(current, route, mode) {
+        /* ────────────────────────────────────────────
+           REAL-TIME ETA FETCHER
+           Polls /eta/:id every 20s when a trip is active.
+           Server-side cache (15s) keeps Google API usage sane.
+           ──────────────────────────────────────────── */
+        async function fetchLiveEta() {
+            const sid = location.hash.replace('#', '').split('?')[0];
+            if (!sid) return;
+            if (!currentSessionData?.currentLocation || !currentSessionData?.destinationCoords) return;
+            if (etaFetchInFlight) return;
+
+            etaFetchInFlight = true;
             try {
-                // Find closest point on route to current location, then sum remaining distance
-                let closestIdx = 0, minDist = Infinity;
-                for (let i = 0; i < route.length; i++) {
-                    const d = haversineMeters(current.lat, current.lng, route[i].lat, route[i].lng);
-                    if (d < minDist) { minDist = d; closestIdx = i; }
+                const r = await fetch(`/eta/${sid}`);
+                if (!r.ok) return;
+                const data = await r.json();
+                if (data.available && data.durationSeconds) {
+                    lastEtaResult = {
+                        durationText: data.durationText,
+                        distanceText: data.distanceText,
+                        durationSeconds: data.durationSeconds
+                    };
+                    lastEtaFetchAt = Date.now();
+                    showEta(lastEtaResult);
                 }
-                let remaining = 0;
-                for (let i = closestIdx; i < route.length - 1; i++) {
-                    remaining += haversineMeters(route[i].lat, route[i].lng, route[i + 1].lat, route[i + 1].lng);
-                }
-                // Also add the gap from current location to the closest route point
-                remaining += minDist;
-
-                const speed = mode === 'driving' ? 7 : 1.4; // m/s
-                const seconds = Math.round(remaining / speed);
-                return {
-                    textLabel: secondsToLabel(seconds),
-                    distanceLabel: metersToDistanceLabel(remaining),
-                    durationSeconds: seconds
-                };
-            } catch { return null; }
-        }
-
-        function haversineMeters(lat1, lng1, lat2, lng2) {
-            const R = 6371000;
-            const toRad = x => x * Math.PI / 180;
-            const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
-            const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        }
-
-        function secondsToLabel(sec) {
-            if (sec < 60) return `${sec} sec`;
-            const min = Math.round(sec / 60);
-            if (min < 60) return `${min} min`;
-            const h = Math.floor(min / 60), m = min % 60;
-            return m === 0 ? `${h} hr` : `${h} hr ${m} min`;
-        }
-
-        function metersToDistanceLabel(m) {
-            if (m < 1000) return `${Math.round(m)} m`;
-            return `${(m / 1000).toFixed(1)} km`;
+            } catch (e) {
+                // Silent fail — placeholder stays
+            } finally {
+                etaFetchInFlight = false;
+            }
         }
 
         /* ────────────────────────────────────────────
@@ -1439,6 +1437,8 @@
                     // Center and zoom in on first real location
                     map.setCenter(pos);
                     map.setZoom(15);
+                    // Kick off an immediate real-time ETA fetch — don't wait for the 20s interval
+                    fetchLiveEta();
                 } else {
                     userMarker.setPosition(pos);
                     // If follow mode is on, keep the map centered on the user as they move
@@ -1659,6 +1659,8 @@
             nearbyPoliceCache = null;
             currentSessionData = null;
             hasEverReceivedLocation = false;
+            lastEtaResult = null;
+            lastEtaFetchAt = 0;
             if (userMarker) { userMarker.setMap(null); userMarker = null; }
             if (destMarker) { destMarker.setMap(null); destMarker = null; }
             if (expectedPathLine) expectedPathLine.setPath([]);
@@ -1672,8 +1674,9 @@
         window.onload = async () => {
             await loadGoogleMaps();
             fetchData();
-            setInterval(fetchData, 3000);   // was 5s — faster for live feel
-            setInterval(updateTimer, 1000);
+            setInterval(fetchData, 3000);       // session/location poll — 3s
+            setInterval(updateTimer, 1000);     // "just now / 12s ago" ticker
+            setInterval(fetchLiveEta, 20000);   // real-time Google ETA — 20s (server caches for 15s)
         };
     </script>
 </body>

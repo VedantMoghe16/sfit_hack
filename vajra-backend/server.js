@@ -129,7 +129,7 @@ function scoreRoute(routePoints, durationSeconds = null, departureHour = null) {
     // Time-based risk multiplier: higher risk at night
     const timeMultiplier = (hour >= 22 || hour < 5) ? 1.5
         : (hour >= 19 || hour < 6) ? 1.25
-        : 1.0;
+            : 1.0;
 
     dense.forEach((pt, i) => {
         const risk = getPointRiskScore(pt.lat, pt.lng, hour) * timeMultiplier;
@@ -473,7 +473,7 @@ app.post("/location", async (req, res) => {
             const destLng = session.destinationCoords.lng;
             const mode = session.mode || 'walking';
             const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${destLat},${destLng}&mode=${mode}&key=${googleMapsKey}`;
-            
+
             fetch(url)
                 .then(r => r.json())
                 .then(data => {
@@ -653,6 +653,92 @@ app.get("/track/:id", (req, res) => {
     const session = sessions[req.params.id];
     if (!session) return res.status(404).json({ error: "Session not found" });
     res.json(session);
+});
+
+// ========================
+// LIVE ETA — on-demand real-time Google Distance Matrix fetch
+// Called by the guardian frontend to keep ETA fresh between location pings.
+// Cached server-side for 15 seconds per session to avoid API hammering.
+// ========================
+app.get("/eta/:id", async (req, res) => {
+    const session = sessions[req.params.id];
+    if (!session) return res.status(404).json({ error: "Session not found" });
+    if (!session.currentLocation || !session.destinationCoords) {
+        return res.json({
+            available: false,
+            reason: !session.currentLocation ? "no_location" : "no_destination"
+        });
+    }
+    if (!googleMapsKey) {
+        return res.json({ available: false, reason: "no_google_key" });
+    }
+
+    const now = Date.now();
+    const CACHE_MS = 15 * 1000; // 15 seconds — fresh enough to feel live, cheap enough to not burn quota
+
+    // Return cached value if recent
+    if (session.liveETA && session.lastEtaFetch && (now - session.lastEtaFetch < CACHE_MS)) {
+        return res.json({
+            available: true,
+            cached: true,
+            ageMs: now - session.lastEtaFetch,
+            durationText: session.liveETA,
+            distanceText: session.liveDistance,
+            durationSeconds: session.liveDurationValue,
+            fetchedAt: session.lastEtaFetch
+        });
+    }
+
+    // Fetch fresh from Google
+    try {
+        const { lat, lng } = session.currentLocation;
+        const destLat = session.destinationCoords.lat;
+        const destLng = session.destinationCoords.lng;
+        const mode = session.mode || 'walking';
+
+        // For driving, include departure_time=now so Google returns duration_in_traffic
+        let url = `https://maps.googleapis.com/maps/api/distancematrix/json`
+            + `?origins=${lat},${lng}`
+            + `&destinations=${destLat},${destLng}`
+            + `&mode=${mode}`
+            + `&key=${googleMapsKey}`;
+        if (mode === 'driving') url += `&departure_time=now&traffic_model=best_guess`;
+
+        const r = await fetch(url);
+        const data = await r.json();
+
+        if (data.status !== "OK" || data.rows?.[0]?.elements?.[0]?.status !== "OK") {
+            return res.json({
+                available: false,
+                reason: "google_error",
+                googleStatus: data.status,
+                elementStatus: data.rows?.[0]?.elements?.[0]?.status
+            });
+        }
+
+        const elem = data.rows[0].elements[0];
+        // Prefer duration_in_traffic when available (driving mode)
+        const durationObj = elem.duration_in_traffic || elem.duration;
+
+        session.liveETA = durationObj.text;
+        session.liveDistance = elem.distance.text;
+        session.liveDurationValue = durationObj.value;
+        session.lastEtaFetch = now;
+        saveSessions();
+
+        res.json({
+            available: true,
+            cached: false,
+            durationText: session.liveETA,
+            distanceText: session.liveDistance,
+            durationSeconds: session.liveDurationValue,
+            inTraffic: !!elem.duration_in_traffic,
+            fetchedAt: now
+        });
+    } catch (err) {
+        console.error("ETA fetch failed:", err.message);
+        res.json({ available: false, reason: "fetch_error", message: err.message });
+    }
 });
 
 app.get("/sessions", (req, res) => {
