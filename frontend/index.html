@@ -1020,6 +1020,23 @@
                     <span class="time-icon">☀️</span>
                     <span>Traveling during</span>
                     <span class="time-label">daytime</span>
+                    <span style="margin-left:auto;opacity:0.7;font-size:11px;" id="time-helper">Normal conditions</span>
+                </div>
+
+                <!-- AI Route Insight card -->
+                <div id="ai-insight-card"
+                    style="display:none; margin:0 0 10px; padding:12px 14px; border-radius:var(--radius-md); background:var(--glass); border:1px solid var(--border); font-size:13px; line-height:1.5;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="font-size:15px;">🤖</span>
+                        <span
+                            style="font-weight:700; font-size:11px; letter-spacing:.5px; color:var(--accent); text-transform:uppercase;">AI
+                            Route Advisory</span>
+                        <span id="ai-insight-hazard-count"
+                            style="margin-left:auto; font-size:10px; color:var(--text-muted);"></span>
+                    </div>
+                    <div id="ai-insight-text" style="color:var(--text-secondary); font-weight:500;">Analysing route
+                        conditions…</div>
+                    <div id="ai-insight-arrival" style="margin-top:5px; font-size:11px; color:var(--text-muted);"></div>
                 </div>
 
                 <div class="primary-actions">
@@ -1287,6 +1304,9 @@
             // ─── Time-of-day indicator ───
             updateTimeIndicator(data.safetyScore);
 
+            // ─── AI Route Insight (fetched once per session, non-blocking) ───
+            fetchAiInsight(data);
+
             // ─── Open Maps description ───
             document.getElementById("openMapsDesc").innerText = data.currentLocation
                 ? "See live location"
@@ -1400,6 +1420,65 @@
         }
 
         /* ────────────────────────────────────────────
+           AI ROUTE INSIGHT
+           Fetched once per session (or when route changes).
+           Calls /ai-route-insight which uses OpenAI to generate
+           a contextual timing advisory based on the actual route,
+           time of travel, and active hazards along the path.
+           ──────────────────────────────────────────── */
+        let aiInsightSessionId = null;   // track which session we've fetched for
+        let aiInsightInFlight = false;
+
+        async function fetchAiInsight(data) {
+            const sid = location.hash.replace('#', '').split('?')[0];
+            if (!sid) return;
+            // Only re-fetch if session changed, or we have no insight yet
+            if (aiInsightSessionId === sid && document.getElementById('ai-insight-card').style.display !== 'none') return;
+            if (aiInsightInFlight) return;
+
+            aiInsightInFlight = true;
+            document.getElementById('ai-insight-card').style.display = 'block';
+            document.getElementById('ai-insight-text').innerText = 'Analysing route conditions…';
+            document.getElementById('ai-insight-arrival').innerText = '';
+            document.getElementById('ai-insight-hazard-count').innerText = '';
+
+            try {
+                const r = await fetch('/ai-route-insight', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: sid })
+                });
+                const result = await r.json();
+
+                if (result.available && result.insight) {
+                    aiInsightSessionId = sid;
+                    document.getElementById('ai-insight-text').innerText = result.insight;
+
+                    if (result.arrivalTime) {
+                        document.getElementById('ai-insight-arrival').innerText =
+                            `Estimated arrival: ${result.arrivalTime}`;
+                    }
+
+                    if (result.activeHazards?.length) {
+                        document.getElementById('ai-insight-hazard-count').innerText =
+                            `${result.activeHazards.length} flagged zone${result.activeHazards.length > 1 ? 's' : ''} on route`;
+                    } else {
+                        document.getElementById('ai-insight-hazard-count').innerText = 'No hazards on route';
+                    }
+                } else if (!result.available && result.reason === 'no_openai_key') {
+                    // Gracefully hide if OpenAI not configured
+                    document.getElementById('ai-insight-card').style.display = 'none';
+                } else {
+                    document.getElementById('ai-insight-text').innerText = 'Advisory unavailable right now.';
+                }
+            } catch {
+                document.getElementById('ai-insight-card').style.display = 'none';
+            } finally {
+                aiInsightInFlight = false;
+            }
+        }
+
+        /* ────────────────────────────────────────────
            MAP UPDATES — FIXED: truly live
            ──────────────────────────────────────────── */
         function updateMap(data) {
@@ -1501,7 +1580,13 @@
            ──────────────────────────────────────────── */
         function updateTimeIndicator(safetyScore) {
             const el = document.getElementById('time-indicator');
-            const hour = safetyScore?.departureHour ?? new Date().getHours();
+            // Use departureHour from safetyScore first (set at route-creation time),
+            // then fall back to the current local hour — this is where the "time thing" was broken:
+            // safetyScore.departureHour was always null on the guardian page because
+            // the /track response didn't re-compute it. Now we also check the session createdAt hour.
+            const hour = safetyScore?.departureHour
+                ?? (currentSessionData?.createdAt ? new Date(currentSessionData.createdAt).getHours() : null)
+                ?? new Date().getHours();
 
             let icon, cls, label, helper;
             if (hour >= 22 || hour < 5) {
@@ -1516,7 +1601,7 @@
             el.innerHTML = `<span class="time-icon">${icon}</span>
                 <span>Traveling during</span>
                 <span class="time-label">${label}</span>
-                <span style="margin-left:auto;opacity:0.7;font-size:11px;">${helper}</span>`;
+                <span style="margin-left:auto;opacity:0.7;font-size:11px;" id="time-helper">${helper}</span>`;
         }
 
         function setStatusChip(data) {
@@ -1661,6 +1746,8 @@
             hasEverReceivedLocation = false;
             lastEtaResult = null;
             lastEtaFetchAt = 0;
+            aiInsightSessionId = null;
+            document.getElementById('ai-insight-card').style.display = 'none';
             if (userMarker) { userMarker.setMap(null); userMarker = null; }
             if (destMarker) { destMarker.setMap(null); destMarker = null; }
             if (expectedPathLine) expectedPathLine.setPath([]);

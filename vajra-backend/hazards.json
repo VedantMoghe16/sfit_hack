@@ -8,27 +8,27 @@
       "end": 6
     },
     "type": "infrastructure",
-    "description": "Street lighting is patchy here after dark. Stick to the main road if you can.",
+    "description": "Street lights are patchy near Borivali station's west exit after dark. Stick to the main road.",
     "polygon": [
       {
-        "latitude": 19.0680,
-        "longitude": 72.8680
+        "latitude": 19.2334,
+        "longitude": 72.8558
       },
       {
-        "latitude": 19.0790,
-        "longitude": 72.8720
+        "latitude": 19.231,
+        "longitude": 72.86
       },
       {
-        "latitude": 19.0810,
-        "longitude": 72.8830
+        "latitude": 19.2282,
+        "longitude": 72.8582
       },
       {
-        "latitude": 19.0720,
-        "longitude": 72.8870
+        "latitude": 19.2279,
+        "longitude": 72.8555
       },
       {
-        "latitude": 19.0640,
-        "longitude": 72.8800
+        "latitude": 19.2318,
+        "longitude": 72.8538
       }
     ]
   },
@@ -41,31 +41,27 @@
       "end": 24
     },
     "type": "crime",
-    "description": "A few snatching incidents reported this month. Stay alert and keep your phone out of sight.",
+    "description": "A few phone-snatching incidents reported near Borivali East this month. Keep your phone out of sight.",
     "polygon": [
       {
-        "latitude": 19.0800,
-        "longitude": 72.8820
+        "latitude": 19.2313,
+        "longitude": 72.8637
       },
       {
-        "latitude": 19.0920,
-        "longitude": 72.8860
+        "latitude": 19.2291,
+        "longitude": 72.867
       },
       {
-        "latitude": 19.0950,
-        "longitude": 72.8980
+        "latitude": 19.2266,
+        "longitude": 72.8665
       },
       {
-        "latitude": 19.0880,
-        "longitude": 72.9040
+        "latitude": 19.2268,
+        "longitude": 72.8618
       },
       {
-        "latitude": 19.0780,
-        "longitude": 72.8960
-      },
-      {
-        "latitude": 19.0760,
-        "longitude": 72.8880
+        "latitude": 19.2306,
+        "longitude": 72.861
       }
     ]
   },
@@ -78,27 +74,27 @@
       "end": 5
     },
     "type": "crowdsourced",
-    "description": "Commercial zone with very few people around late at night. Feels empty after 10 PM.",
+    "description": "Quiet stretch toward Dahisar border \u2014 very few people around after 10 PM.",
     "polygon": [
       {
-        "latitude": 19.0700,
-        "longitude": 72.8900
+        "latitude": 19.2232,
+        "longitude": 72.8693
       },
       {
-        "latitude": 19.0820,
-        "longitude": 72.8940
+        "latitude": 19.2212,
+        "longitude": 72.873
       },
       {
-        "latitude": 19.0850,
-        "longitude": 72.9060
+        "latitude": 19.2174,
+        "longitude": 72.8716
       },
       {
-        "latitude": 19.0740,
-        "longitude": 72.9100
+        "latitude": 19.2181,
+        "longitude": 72.8677
       },
       {
-        "latitude": 19.0680,
-        "longitude": 72.9000
+        "latitude": 19.2208,
+        "longitude": 72.8664
       }
     ]
   },
@@ -111,27 +107,27 @@
       "end": 24
     },
     "type": "weather",
-    "description": "Heavy waterlogging during monsoons. Often impassable in July through September.",
+    "description": "Low-lying pocket in Kandivali West. Heavy waterlogging every monsoon, often impassable July\u2013September.",
     "polygon": [
       {
-        "latitude": 19.0540,
-        "longitude": 72.8740
+        "latitude": 19.2085,
+        "longitude": 72.843
       },
       {
-        "latitude": 19.0680,
-        "longitude": 72.8780
+        "latitude": 19.2064,
+        "longitude": 72.8459
       },
       {
-        "latitude": 19.0720,
-        "longitude": 72.8920
+        "latitude": 19.2029,
+        "longitude": 72.8432
       },
       {
-        "latitude": 19.0600,
-        "longitude": 72.8980
+        "latitude": 19.2034,
+        "longitude": 72.8394
       },
       {
-        "latitude": 19.0500,
-        "longitude": 72.8880
+        "latitude": 19.2061,
+        "longitude": 72.8383
       }
     ]
   },
@@ -144,27 +140,27 @@
       "end": 23
     },
     "type": "traffic",
-    "description": "Blind curve with heavy traffic and several pedestrian incidents during evening rush.",
+    "description": "Busy junction near Kandivali East with poor visibility. Several pedestrian incidents during rush hour.",
     "polygon": [
       {
-        "latitude": 19.0850,
-        "longitude": 72.8680
+        "latitude": 19.2115,
+        "longitude": 72.8562
       },
       {
-        "latitude": 19.0960,
-        "longitude": 72.8700
+        "latitude": 19.2091,
+        "longitude": 72.8594
       },
       {
-        "latitude": 19.0980,
-        "longitude": 72.8820
+        "latitude": 19.2057,
+        "longitude": 72.8603
       },
       {
-        "latitude": 19.0880,
-        "longitude": 72.8840
+        "latitude": 19.2064,
+        "longitude": 72.8543
       },
       {
-        "latitude": 19.0820,
-        "longitude": 72.8760
+        "latitude": 19.2098,
+        "longitude": 72.8533
       }
     ]
   },
@@ -177,27 +173,31 @@
       "end": 22
     },
     "type": "unrest",
-    "description": "Tensions reported in this pocket. Consider taking a different route for now.",
+    "description": "Avoid this stretch near Malad West SV Road \u2014 tensions reported recently. Use the parallel lane.",
     "polygon": [
       {
-        "latitude": 19.0440,
-        "longitude": 72.8880
+        "latitude": 19.1889,
+        "longitude": 72.8402
       },
       {
-        "latitude": 19.0580,
-        "longitude": 72.8900
+        "latitude": 19.1882,
+        "longitude": 72.8413
       },
       {
-        "latitude": 19.0640,
-        "longitude": 72.9040
+        "latitude": 19.1856,
+        "longitude": 72.8433
       },
       {
-        "latitude": 19.0520,
-        "longitude": 72.9120
+        "latitude": 19.1836,
+        "longitude": 72.8391
       },
       {
-        "latitude": 19.0420,
-        "longitude": 72.9020
+        "latitude": 19.1846,
+        "longitude": 72.8356
+      },
+      {
+        "latitude": 19.1875,
+        "longitude": 72.836
       }
     ]
   },
@@ -210,27 +210,27 @@
       "end": 24
     },
     "type": "infrastructure",
-    "description": "Open pits, debris, and uneven footpaths. Watch your step, especially at night.",
+    "description": "Active construction near Malad East \u2014 open pits and debris on the footpath. Watch your step at night.",
     "polygon": [
       {
-        "latitude": 19.0920,
-        "longitude": 72.8780
+        "latitude": 19.1934,
+        "longitude": 72.8617
       },
       {
-        "latitude": 19.1040,
-        "longitude": 72.8820
+        "latitude": 19.1914,
+        "longitude": 72.8651
       },
       {
-        "latitude": 19.1060,
-        "longitude": 72.8940
+        "latitude": 19.1881,
+        "longitude": 72.8648
       },
       {
-        "latitude": 19.0960,
-        "longitude": 72.8980
+        "latitude": 19.188,
+        "longitude": 72.8586
       },
       {
-        "latitude": 19.0900,
-        "longitude": 72.8880
+        "latitude": 19.1911,
+        "longitude": 72.8589
       }
     ]
   },
@@ -243,27 +243,31 @@
       "end": 6
     },
     "type": "animals",
-    "description": "Packs of strays reported at night. Locals recommend avoiding this stretch after dark.",
+    "description": "Stray dog packs reported near Malad station's side lanes after 9 PM. Locals recommend the main road.",
     "polygon": [
       {
-        "latitude": 19.0620,
-        "longitude": 72.8520
+        "latitude": 19.1864,
+        "longitude": 72.8481
       },
       {
-        "latitude": 19.0760,
-        "longitude": 72.8560
+        "latitude": 19.1853,
+        "longitude": 72.8511
       },
       {
-        "latitude": 19.0800,
-        "longitude": 72.8700
+        "latitude": 19.1824,
+        "longitude": 72.8517
       },
       {
-        "latitude": 19.0680,
-        "longitude": 72.8760
+        "latitude": 19.1813,
+        "longitude": 72.8484
       },
       {
-        "latitude": 19.0580,
-        "longitude": 72.8660
+        "latitude": 19.1813,
+        "longitude": 72.8455
+      },
+      {
+        "latitude": 19.185,
+        "longitude": 72.8461
       }
     ]
   },
@@ -276,27 +280,27 @@
       "end": 5
     },
     "type": "crowdsourced",
-    "description": "Long stretch with no shops or stalls open late. Better-lit alternatives exist nearby.",
+    "description": "Long stretch on Kandivali Link Road with shuttered shops late at night. Better-lit route exists via SV Rd.",
     "polygon": [
       {
-        "latitude": 19.1080,
-        "longitude": 72.8560
+        "latitude": 19.2162,
+        "longitude": 72.8367
       },
       {
-        "latitude": 19.1200,
-        "longitude": 72.8620
+        "latitude": 19.2148,
+        "longitude": 72.8412
       },
       {
-        "latitude": 19.1240,
-        "longitude": 72.8780
+        "latitude": 19.2097,
+        "longitude": 72.8394
       },
       {
-        "latitude": 19.1140,
-        "longitude": 72.8820
+        "latitude": 19.2096,
+        "longitude": 72.8361
       },
       {
-        "latitude": 19.1040,
-        "longitude": 72.8700
+        "latitude": 19.2141,
+        "longitude": 72.8352
       }
     ]
   },
@@ -309,27 +313,27 @@
       "end": 23
     },
     "type": "crime",
-    "description": "User reports of catcalling and harassment around evening hours.",
+    "description": "Isolated road near the Borivali National Park fringe. Reports of harassment toward solo walkers in the evening.",
     "polygon": [
       {
-        "latitude": 19.0380,
-        "longitude": 72.8620
+        "latitude": 19.2412,
+        "longitude": 72.8728
       },
       {
-        "latitude": 19.0500,
-        "longitude": 72.8680
+        "latitude": 19.2397,
+        "longitude": 72.8746
       },
       {
-        "latitude": 19.0540,
-        "longitude": 72.8820
+        "latitude": 19.2365,
+        "longitude": 72.8744
       },
       {
-        "latitude": 19.0420,
-        "longitude": 72.8860
+        "latitude": 19.2345,
+        "longitude": 72.8708
       },
       {
-        "latitude": 19.0340,
-        "longitude": 72.8760
+        "latitude": 19.2388,
+        "longitude": 72.8691
       }
     ]
   },
@@ -342,27 +346,27 @@
       "end": 24
     },
     "type": "infrastructure",
-    "description": "Pavement in poor condition with open drain covers. Walk carefully.",
+    "description": "Broken pavement with open drain covers near the Malad Inorbit area. Walk carefully even during the day.",
     "polygon": [
       {
-        "latitude": 19.1280,
-        "longitude": 72.8880
+        "latitude": 19.1793,
+        "longitude": 72.8461
       },
       {
-        "latitude": 19.1380,
-        "longitude": 72.8920
+        "latitude": 19.1775,
+        "longitude": 72.8481
       },
       {
-        "latitude": 19.1400,
-        "longitude": 72.9020
+        "latitude": 19.1736,
+        "longitude": 72.8469
       },
       {
-        "latitude": 19.1300,
-        "longitude": 72.9060
+        "latitude": 19.1734,
+        "longitude": 72.8424
       },
       {
-        "latitude": 19.1240,
-        "longitude": 72.8960
+        "latitude": 19.1769,
+        "longitude": 72.8417
       }
     ]
   },
@@ -375,27 +379,31 @@
       "end": 4
     },
     "type": "traffic",
-    "description": "High incidents of rash driving on weekend late nights near the main highway.",
+    "description": "Rash driving on the Kandivali\u2013Malad border road on late weekend nights near the highway.",
     "polygon": [
       {
-        "latitude": 19.1000,
-        "longitude": 72.8900
+        "latitude": 19.1989,
+        "longitude": 72.8521
       },
       {
-        "latitude": 19.1140,
-        "longitude": 72.8960
+        "latitude": 19.1982,
+        "longitude": 72.8552
       },
       {
-        "latitude": 19.1180,
-        "longitude": 72.9100
+        "latitude": 19.1949,
+        "longitude": 72.8557
       },
       {
-        "latitude": 19.1060,
-        "longitude": 72.9160
+        "latitude": 19.1923,
+        "longitude": 72.8533
       },
       {
-        "latitude": 19.0960,
-        "longitude": 72.9040
+        "latitude": 19.1949,
+        "longitude": 72.8491
+      },
+      {
+        "latitude": 19.1977,
+        "longitude": 72.8495
       }
     ]
   },
@@ -408,27 +416,31 @@
       "end": 6
     },
     "type": "infrastructure",
-    "description": "Dark stretch under the flyover with limited visibility. Uncomfortable alone.",
+    "description": "Dark stretch under the Eksar flyover in Borivali West. Limited visibility and few people around after dark.",
     "polygon": [
       {
-        "latitude": 19.0820,
-        "longitude": 72.8500
+        "latitude": 19.2251,
+        "longitude": 72.8508
       },
       {
-        "latitude": 19.0920,
-        "longitude": 72.8540
+        "latitude": 19.2226,
+        "longitude": 72.8524
       },
       {
-        "latitude": 19.0940,
-        "longitude": 72.8640
+        "latitude": 19.2204,
+        "longitude": 72.853
       },
       {
-        "latitude": 19.0860,
-        "longitude": 72.8680
+        "latitude": 19.2192,
+        "longitude": 72.8491
       },
       {
-        "latitude": 19.0800,
-        "longitude": 72.8600
+        "latitude": 19.2211,
+        "longitude": 72.8462
+      },
+      {
+        "latitude": 19.2234,
+        "longitude": 72.8461
       }
     ]
   },
@@ -441,27 +453,27 @@
       "end": 6
     },
     "type": "crowdsourced",
-    "description": "Busy market by day, completely shuttered at night. Not much pedestrian activity.",
+    "description": "Poisar market area is busy by day, completely shuttered and empty by night.",
     "polygon": [
       {
-        "latitude": 19.0900,
-        "longitude": 72.9080
+        "latitude": 19.2097,
+        "longitude": 72.8626
       },
       {
-        "latitude": 19.1020,
-        "longitude": 72.9120
+        "latitude": 19.2081,
+        "longitude": 72.8665
       },
       {
-        "latitude": 19.1040,
-        "longitude": 72.9240
+        "latitude": 19.2041,
+        "longitude": 72.8645
       },
       {
-        "latitude": 19.0940,
-        "longitude": 72.9280
+        "latitude": 19.2044,
+        "longitude": 72.8601
       },
       {
-        "latitude": 19.0860,
-        "longitude": 72.9180
+        "latitude": 19.2075,
+        "longitude": 72.861
       }
     ]
   },
@@ -474,27 +486,31 @@
       "end": 2
     },
     "type": "crime",
-    "description": "Chain-snatching incidents by two-wheelers reported here recently.",
+    "description": "Chain-snatching incidents by two-wheelers reported on the Malad West S.V. Road stretch recently.",
     "polygon": [
       {
-        "latitude": 19.0480,
-        "longitude": 72.8400
+        "latitude": 19.1847,
+        "longitude": 72.8353
       },
       {
-        "latitude": 19.0620,
-        "longitude": 72.8440
+        "latitude": 19.1836,
+        "longitude": 72.8391
       },
       {
-        "latitude": 19.0660,
-        "longitude": 72.8580
+        "latitude": 19.1802,
+        "longitude": 72.8386
       },
       {
-        "latitude": 19.0540,
-        "longitude": 72.8620
+        "latitude": 19.1786,
+        "longitude": 72.8351
       },
       {
-        "latitude": 19.0440,
-        "longitude": 72.8520
+        "latitude": 19.1803,
+        "longitude": 72.8334
+      },
+      {
+        "latitude": 19.1831,
+        "longitude": 72.8328
       }
     ]
   },
@@ -507,27 +523,27 @@
       "end": 5
     },
     "type": "crowdsourced",
-    "description": "Residential stretch — users report feeling uneasy walking alone late at night.",
+    "description": "Residential lane in IC Colony, Borivali West \u2014 residents report feeling uneasy walking alone past midnight.",
     "polygon": [
       {
-        "latitude": 19.1160,
-        "longitude": 72.8400
+        "latitude": 19.2286,
+        "longitude": 72.8445
       },
       {
-        "latitude": 19.1300,
-        "longitude": 72.8460
+        "latitude": 19.227,
+        "longitude": 72.8487
       },
       {
-        "latitude": 19.1340,
-        "longitude": 72.8620
+        "latitude": 19.224,
+        "longitude": 72.8485
       },
       {
-        "latitude": 19.1220,
-        "longitude": 72.8680
+        "latitude": 19.2241,
+        "longitude": 72.8433
       },
       {
-        "latitude": 19.1120,
-        "longitude": 72.8560
+        "latitude": 19.2269,
+        "longitude": 72.8426
       }
     ]
   }

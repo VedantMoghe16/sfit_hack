@@ -398,6 +398,13 @@ app.post("/create", async (req, res) => {
     const routePoints = routeResult?.chosen?.points || [];
     const safetyScore = routeResult?.chosen?.safety || scoreRoute(routePoints);
 
+    // ── FIX: stamp departureHour at session creation so time-of-day
+    //    indicators on the guardian page reflect the ACTUAL hour the
+    //    trip started, not "current hour" which drifts as the session ages.
+    if (safetyScore && safetyScore.departureHour === undefined) {
+        safetyScore.departureHour = new Date().getHours();
+    }
+
     sessions[id] = {
         id,
         destination: destLabel,
@@ -778,6 +785,102 @@ setInterval(() => {
     }
     if (dirty) saveSessions();
 }, 30000);
+
+// ========================
+// AI ROUTE INSIGHT — OpenAI-powered timing advisory
+// Called once when a session loads (or on demand).
+// Returns a short, human-friendly sentence about the route timing.
+// ========================
+app.post("/ai-route-insight", async (req, res) => {
+    const { sessionId } = req.body;
+    const openaiKey = process.env.OPENAI_API_KEY;
+
+    if (!openaiKey) {
+        return res.json({ available: false, reason: "no_openai_key" });
+    }
+
+    const session = sessionId ? sessions[sessionId] : null;
+    const safetyScore = session?.safetyScore;
+    const now = new Date();
+    const hour = safetyScore?.departureHour ?? now.getHours();
+    const destination = session?.destination || req.body.destination || "their destination";
+    const score = safetyScore?.score ?? req.body.score;
+    const corridorQuality = safetyScore?.corridorQuality ?? req.body.corridorQuality;
+    const timeLabel = safetyScore?.timeLabel ?? req.body.timeLabel;
+    const hazardRatio = safetyScore?.hazardRatio ?? req.body.hazardRatio ?? 0;
+    const durationSeconds = session?.liveDurationValue ?? req.body.durationSeconds;
+    const mode = session?.mode ?? req.body.mode ?? "walking";
+
+    // Build active hazards summary along the route
+    const activeHazardNames = [];
+    if (session?.expectedRoute?.length) {
+        const dense = session.expectedRoute;
+        const seenIds = new Set();
+        for (const zone of hazardZones) {
+            if (!isZoneActive(zone, hour)) continue;
+            for (const pt of dense) {
+                try {
+                    if (isPointInPolygon({ latitude: pt.lat, longitude: pt.lng }, zone.polygon)) {
+                        if (!seenIds.has(zone.id)) {
+                            seenIds.add(zone.id);
+                            activeHazardNames.push(`${zone.name} (risk ${zone.riskScore}/10)`);
+                        }
+                        break;
+                    }
+                } catch (_) { }
+            }
+        }
+    }
+
+    const etaStr = durationSeconds
+        ? `${Math.round(durationSeconds / 60)} minutes`
+        : "unknown duration";
+    const arrivalTime = durationSeconds
+        ? new Date(Date.now() + durationSeconds * 1000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+        : null;
+
+    const prompt = `You are VAJRA, a safety-first navigation assistant for Mumbai.
+A user is ${mode === "driving" ? "driving" : "walking/commuting"} to "${destination}".
+Current time: ${now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} (${timeLabel || "daytime"})
+Estimated travel time: ${etaStr}${arrivalTime ? ` (arriving ~${arrivalTime})` : ""}
+Route safety score: ${score !== undefined ? `${score}/100 — ${corridorQuality || "unknown"} corridor` : "not yet calculated"}
+Hazard ratio along route: ${Math.round((hazardRatio || 0) * 100)}% of path has flagged zones
+Active hazards on this route: ${activeHazardNames.length ? activeHazardNames.join(", ") : "none detected"}
+
+Write ONE short, warm, actionable sentence (max 18 words) for the guardian watching the tracking page.
+Focus on the time of travel and any hazards. Do NOT use emojis. Be specific to the conditions.`;
+
+    try {
+        const r = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${openaiKey}`
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                max_tokens: 60,
+                temperature: 0.6,
+                messages: [{ role: "user", content: prompt }]
+            })
+        });
+        const data = await r.json();
+        if (data.error) throw new Error(data.error.message);
+        const insight = data.choices?.[0]?.message?.content?.trim() || null;
+        res.json({
+            available: true,
+            insight,
+            hour,
+            timeLabel: timeLabel || "daytime",
+            score,
+            arrivalTime,
+            activeHazards: activeHazardNames
+        });
+    } catch (err) {
+        console.error("AI route insight failed:", err.message);
+        res.json({ available: false, reason: "openai_error", message: err.message });
+    }
+});
 
 // ========================
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../frontend", "index.html")));
