@@ -481,6 +481,7 @@ app.post("/location", async (req, res) => {
                         const elem = data.rows[0].elements[0];
                         session.liveETA = elem.duration.text;
                         session.liveDistance = elem.distance.text;
+                        session.liveDurationValue = elem.duration.value;
                         saveSessions();
                     }
                 })

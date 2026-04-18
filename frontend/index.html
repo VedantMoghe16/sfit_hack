@@ -538,6 +538,41 @@
         .time-indicator.evening { border-color: rgba(251,191,36,.2); color: var(--warn); }
         .time-indicator.day { border-color: rgba(52,211,153,.2); color: var(--safe); }
 
+        /* ── Google Maps ETA Replica ── */
+        .maps-eta-block {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .maps-eta-block .eta-main {
+            font-size: 34px;
+            font-weight: 700;
+            color: #34d399; /* Green for fast, standard Google Maps vibe */
+            line-height: 1.1;
+            letter-spacing: -1px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .maps-eta-block .eta-sub {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .maps-eta-block .eta-sub .separator {
+            font-weight: 900;
+            opacity: 0.5;
+        }
+
         /* ── Primary Actions ── */
         .primary-actions {
             display: flex;
@@ -851,9 +886,20 @@
 
             <!-- Active session content -->
             <div id="session-content" style="display:none;">
+
+                <!-- Google Maps Exact Replica ETA Block -->
+                <div id="maps-eta-block" class="maps-eta-block" style="display:none;">
+                    <div class="eta-main" id="etaMainText">-- min</div>
+                    <div class="eta-sub" id="etaSubText">
+                        <span id="etaDistance">-- km</span>
+                        <span class="separator">·</span>
+                        <span id="etaArrivalTime">--:--</span>
+                    </div>
+                </div>
+
                 <div class="info-grid">
                     <div class="info-card">
-                        <label>Destination & ETA</label>
+                        <label>Destination</label>
                         <div class="value" id="destText">—</div>
                         <div class="sub" id="destSub">Not set</div>
                     </div>
@@ -1049,13 +1095,29 @@
         const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
         function updateUI(data) {
+            // Google Maps Replica ETA
+            const etaBlock = document.getElementById("maps-eta-block");
+            if (data.liveETA && data.liveDistance && data.liveDurationValue) {
+                const arrivalDate = new Date(Date.now() + (data.liveDurationValue * 1000));
+                const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                
+                document.getElementById("etaMainText").innerText = data.liveETA; // e.g. "15 mins"
+                document.getElementById("etaDistance").innerText = data.liveDistance; // e.g. "5.2 km"
+                document.getElementById("etaArrivalTime").innerText = arrivalStr; // e.g. "10:15 PM"
+                
+                // Color formatting based on safety/speed
+                const isSlow = data.liveETA.includes("hour"); // basic heuristic
+                document.getElementById("etaMainText").style.color = isSlow ? "#fbbf24" : "#34d399";
+                
+                etaBlock.style.display = "flex";
+            } else {
+                etaBlock.style.display = "none";
+            }
+
             // Destination
             document.getElementById("destText").innerText = data.destination || "Unknown";
-            if (data.liveETA && data.liveDistance) {
-                document.getElementById("destSub").innerText = `${data.liveDistance} • ${data.liveETA} left`;
-                document.getElementById("destSub").style.color = 'var(--accent)';
-                document.getElementById("destSub").style.fontWeight = '700';
-            } else if (data.currentLocation) {
+            
+            if (data.currentLocation) {
                 document.getElementById("destSub").innerText = `${data.currentLocation.lat.toFixed(4)}, ${data.currentLocation.lng.toFixed(4)}`;
                 document.getElementById("destSub").style.color = 'var(--text-muted)';
                 document.getElementById("destSub").style.fontWeight = '500';
