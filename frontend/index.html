@@ -1320,39 +1320,73 @@
         }
 
         /* ────────────────────────────────────────────
-           ETA HERO — always from Google Distance Matrix (real-time)
-           No fake speed calculations. Either we have a real Google
-           ETA, or we show "Calculating…".
+           ETA HERO
+           Priority order:
+           1. Live Google Distance Matrix ETA (most accurate, needs GPS)
+           2. Google route duration from /create + elapsed time since trip start
+              → trip was 22 min, 8 min have passed, so 14 min remaining, arriving at 9:37 PM
+              This is ALWAYS available from the moment a session is created.
+           3. Placeholder if nothing at all
            ──────────────────────────────────────────── */
-        let lastEtaResult = null;  // cache last successful ETA to avoid flicker between fetches
+        let lastEtaResult = null;
         let lastEtaFetchAt = 0;
         let etaFetchInFlight = false;
+
+        function computeRouteEta(data) {
+            if (!data.routeDurationSeconds || !data.createdAt) return null;
+            const elapsedSec = Math.max(0, Math.floor((Date.now() - data.createdAt) / 1000));
+            const remainingSec = data.routeDurationSeconds - elapsedSec;
+            if (remainingSec <= 30) return null;  // basically arrived
+
+            const mins = Math.round(remainingSec / 60);
+            const durationText = mins < 1 ? "Under a minute"
+                : mins === 1 ? "1 min"
+                    : mins < 60 ? `${mins} mins`
+                        : `${Math.floor(mins / 60)}h ${mins % 60}m`;
+
+            let distanceText = null;
+            if (data.routeDistanceMeters) {
+                const ratio = Math.min(1, remainingSec / data.routeDurationSeconds);
+                const remMeters = Math.round(data.routeDistanceMeters * ratio);
+                distanceText = remMeters >= 1000
+                    ? `${(remMeters / 1000).toFixed(1)} km`
+                    : `${remMeters} m`;
+            }
+
+            return { durationText, distanceText, durationSeconds: remainingSec, isRouteEstimate: true };
+        }
 
         function updateEtaHero(data) {
             const hero = document.getElementById("eta-hero");
 
-            // If the /track payload already has live ETA (server pushed it recently), render it
+            // Priority 1: live Google ETA pushed by server after a GPS ping
             if (data.liveETA && data.liveDistance && data.liveDurationValue) {
                 lastEtaResult = {
                     durationText: data.liveETA,
                     distanceText: data.liveDistance,
-                    durationSeconds: data.liveDurationValue
+                    durationSeconds: data.liveDurationValue,
+                    isRouteEstimate: false
                 };
                 showEta(lastEtaResult);
                 return;
             }
 
-            // If we have a recent cached value, show it so the number doesn't flicker
-            if (lastEtaResult) {
+            // Keep showing live ETA if we have it cached (avoid flicker)
+            if (lastEtaResult && !lastEtaResult.isRouteEstimate) {
                 showEta(lastEtaResult);
                 return;
             }
 
-            // Nothing yet — show a friendly placeholder (no fake math)
-            if (data.currentLocation && data.destinationCoords) {
-                showEtaPlaceholder("Calculating…");
-            } else if (!data.currentLocation) {
-                showEtaPlaceholder("Waiting for location…");
+            // Priority 2: route-based ETA computed from Google Directions duration at session creation
+            const routeEta = computeRouteEta(data);
+            if (routeEta) {
+                showEta(routeEta);
+                return;
+            }
+
+            // Priority 3: placeholder
+            if (data.destinationCoords) {
+                showEtaPlaceholder("Calculating...");
             } else {
                 hero.style.display = "none";
             }
@@ -1363,9 +1397,32 @@
             document.getElementById("etaMainText").innerText = msg;
             document.getElementById("etaDistance").innerText = "—";
             document.getElementById("etaArrivalTime").innerText = "—";
-            hero.classList.remove('warn', 'risk');
+            hero.classList.remove("warn", "risk");
             hero.style.display = "block";
         }
+
+        function showEta(eta) {
+            const hero = document.getElementById("eta-hero");
+            const arrivalDate = new Date(Date.now() + eta.durationSeconds * 1000);
+            const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+            document.getElementById("etaMainText").innerText = eta.durationText;
+            document.getElementById("etaDistance").innerText = eta.distanceText || "—";
+            document.getElementById("etaArrivalTime").innerText = arrivalStr;
+
+            const labelEl = document.querySelector(".eta-hero .eta-label");
+            if (labelEl) labelEl.innerText = eta.isRouteEstimate ? "Est. arrival in" : "Arriving in";
+
+            hero.classList.remove("warn", "risk");
+            if (eta.durationSeconds > 45 * 60) hero.classList.add("warn");
+            if (currentSessionData?.status === "RISK") {
+                hero.classList.remove("warn");
+                hero.classList.add("risk");
+            }
+            hero.style.display = "block";
+        }
+
+
 
         function showEta(eta) {
             const hero = document.getElementById("eta-hero");
@@ -1580,28 +1637,59 @@
            ──────────────────────────────────────────── */
         function updateTimeIndicator(safetyScore) {
             const el = document.getElementById('time-indicator');
-            // Use departureHour from safetyScore first (set at route-creation time),
-            // then fall back to the current local hour — this is where the "time thing" was broken:
-            // safetyScore.departureHour was always null on the guardian page because
-            // the /track response didn't re-compute it. Now we also check the session createdAt hour.
-            const hour = safetyScore?.departureHour
-                ?? (currentSessionData?.createdAt ? new Date(currentSessionData.createdAt).getHours() : null)
-                ?? new Date().getHours();
+            const data = currentSessionData;
+
+            // ── ARRIVAL HOUR (what actually matters for the guardian) ──
+            // We want to know: what time will they arrive?
+            // Not what time they left. Use route duration + createdAt.
+            let arrivalHour = null;
+            if (data?.routeDurationSeconds && data?.createdAt) {
+                const elapsedSec = Math.floor((Date.now() - data.createdAt) / 1000);
+                const remainingSec = Math.max(0, data.routeDurationSeconds - elapsedSec);
+                arrivalHour = new Date(Date.now() + remainingSec * 1000).getHours();
+            }
+            // Fall back to live ETA arrival if we have it
+            if (arrivalHour === null && lastEtaResult?.durationSeconds) {
+                arrivalHour = new Date(Date.now() + lastEtaResult.durationSeconds * 1000).getHours();
+            }
+            // Fall back to departure hour (at least correct for current context)
+            const departureHour = safetyScore?.departureHour
+                ?? (data?.createdAt ? new Date(data.createdAt).getHours() : new Date().getHours());
+
+            // Show arrival-based time context when we have it, departure otherwise
+            const hour = arrivalHour ?? departureHour;
+            const isArrival = arrivalHour !== null;
 
             let icon, cls, label, helper;
             if (hour >= 22 || hour < 5) {
-                icon = '🌙'; cls = 'night'; label = 'late night'; helper = "Stay extra alert";
-            } else if (hour >= 19 || hour < 6) {
-                icon = '🌆'; cls = 'evening'; label = 'evening'; helper = "Keep someone informed";
+                icon = '🌙'; cls = 'night';
+                label = 'late night';
+                helper = isArrival ? "Arriving late night — extra vigilance" : "Late night travel — stay alert";
+            } else if (hour >= 19) {
+                icon = '🌆'; cls = 'evening';
+                label = 'evening';
+                helper = isArrival ? "Arriving in the evening" : "Evening travel — keep someone informed";
+            } else if (hour >= 6) {
+                icon = '☀️'; cls = 'day';
+                label = 'daytime';
+                helper = isArrival ? "Arriving during the day" : "Normal daytime conditions";
             } else {
-                icon = '☀️'; cls = 'day'; label = 'daytime'; helper = "Normal conditions";
+                icon = '🌅'; cls = 'day';
+                label = 'early morning';
+                helper = isArrival ? "Arriving early morning" : "Early morning — few people around";
             }
+
+            // Show departure time in a readable format
+            const depDate = data?.createdAt ? new Date(data.createdAt) : null;
+            const depStr = depDate
+                ? depDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+                : null;
 
             el.className = `time-indicator ${cls}`;
             el.innerHTML = `<span class="time-icon">${icon}</span>
-                <span>Traveling during</span>
+                <span>${isArrival ? 'Arriving during' : 'Traveling during'}</span>
                 <span class="time-label">${label}</span>
-                <span style="margin-left:auto;opacity:0.7;font-size:11px;" id="time-helper">${helper}</span>`;
+                <span style="margin-left:auto;opacity:0.7;font-size:11px;" id="time-helper">${depStr ? 'Left at ' + depStr : helper}</span>`;
         }
 
         function setStatusChip(data) {

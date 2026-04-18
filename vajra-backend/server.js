@@ -397,13 +397,20 @@ app.post("/create", async (req, res) => {
 
     const routePoints = routeResult?.chosen?.points || [];
     const safetyScore = routeResult?.chosen?.safety || scoreRoute(routePoints);
+    const createdAtMs = Date.now();
 
-    // ── FIX: stamp departureHour at session creation so time-of-day
-    //    indicators on the guardian page reflect the ACTUAL hour the
-    //    trip started, not "current hour" which drifts as the session ages.
+    // Stamp departureHour so time indicators reflect when the trip actually started
     if (safetyScore && safetyScore.departureHour === undefined) {
-        safetyScore.departureHour = new Date().getHours();
+        safetyScore.departureHour = new Date(createdAtMs).getHours();
     }
+
+    // Store Google's route duration + distance directly on the session.
+    // This lets the guardian page show a real arrival time estimate immediately —
+    // before any GPS pings come in — because Google already told us how long the
+    // route takes when we fetched it at /create time.
+    const routeDurationSeconds = routeResult?.chosen?.duration ?? null;      // seconds
+    const routeDistanceMeters = routeResult?.chosen?.distance ?? null;      // metres
+    const routeSummary = routeResult?.chosen?.summary ?? null;
 
     sessions[id] = {
         id,
@@ -421,12 +428,15 @@ app.post("/create", async (req, res) => {
             duration: a.duration, distance: a.distance
         })) || [],
         safetyScore,
-        lastPing: Date.now(),
+        routeDurationSeconds,   // Google's route travel time in seconds — used for arrival estimate
+        routeDistanceMeters,    // Google's route distance in metres
+        routeSummary,           // e.g. "Western Express Highway"
+        lastPing: createdAtMs,
         deviationCount: 0,
         alert: null,
         sosTriggered: false,
         alertsSent: false,
-        createdAt: Date.now()
+        createdAt: createdAtMs
     };
 
     saveSessions();
