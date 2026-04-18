@@ -1,114 +1,534 @@
 [
   {
     "id": "hz_001",
-    "name": "Low-Visibility Corridor",
-    "riskScore": 7,
-    "activeHours": { "start": 20, "end": 6 },
+    "name": "Poorly Lit Stretch",
+    "riskScore": 6,
+    "activeHours": {
+      "start": 20,
+      "end": 6
+    },
     "type": "infrastructure",
-    "description": "Poorly lit stretch, minimal streetlights",
+    "description": "Street lighting is patchy here after dark. Stick to the main road if you can.",
     "polygon": [
-      { "latitude": 19.0720, "longitude": 72.8730 },
-      { "latitude": 19.0740, "longitude": 72.8760 },
-      { "latitude": 19.0710, "longitude": 72.8780 },
-      { "latitude": 19.0690, "longitude": 72.8750 }
+      {
+        "latitude": 19.0680,
+        "longitude": 72.8680
+      },
+      {
+        "latitude": 19.0790,
+        "longitude": 72.8720
+      },
+      {
+        "latitude": 19.0810,
+        "longitude": 72.8830
+      },
+      {
+        "latitude": 19.0720,
+        "longitude": 72.8870
+      },
+      {
+        "latitude": 19.0640,
+        "longitude": 72.8800
+      }
     ]
   },
   {
     "id": "hz_002",
-    "name": "High-Incident Area",
-    "riskScore": 9,
-    "activeHours": { "start": 0, "end": 24 },
+    "name": "Recent Incident Reports",
+    "riskScore": 7,
+    "activeHours": {
+      "start": 0,
+      "end": 24
+    },
     "type": "crime",
-    "description": "Multiple incident reports in past 30 days",
+    "description": "A few snatching incidents reported this month. Stay alert and keep your phone out of sight.",
     "polygon": [
-      { "latitude": 19.0830, "longitude": 72.8880 },
-      { "latitude": 19.0850, "longitude": 72.8920 },
-      { "latitude": 19.0820, "longitude": 72.8940 },
-      { "latitude": 19.0800, "longitude": 72.8900 }
+      {
+        "latitude": 19.0800,
+        "longitude": 72.8820
+      },
+      {
+        "latitude": 19.0920,
+        "longitude": 72.8860
+      },
+      {
+        "latitude": 19.0950,
+        "longitude": 72.8980
+      },
+      {
+        "latitude": 19.0880,
+        "longitude": 72.9040
+      },
+      {
+        "latitude": 19.0780,
+        "longitude": 72.8960
+      },
+      {
+        "latitude": 19.0760,
+        "longitude": 72.8880
+      }
     ]
   },
   {
     "id": "hz_003",
-    "name": "Low-Activity Zone",
+    "name": "Deserted After Hours",
     "riskScore": 5,
-    "activeHours": { "start": 22, "end": 5 },
+    "activeHours": {
+      "start": 22,
+      "end": 5
+    },
     "type": "crowdsourced",
-    "description": "User-reported: deserted after 10PM",
+    "description": "Commercial zone with very few people around late at night. Feels empty after 10 PM.",
     "polygon": [
-      { "latitude": 19.0760, "longitude": 72.8900 },
-      { "latitude": 19.0780, "longitude": 72.8930 },
-      { "latitude": 19.0760, "longitude": 72.8960 },
-      { "latitude": 19.0740, "longitude": 72.8930 }
+      {
+        "latitude": 19.0700,
+        "longitude": 72.8900
+      },
+      {
+        "latitude": 19.0820,
+        "longitude": 72.8940
+      },
+      {
+        "latitude": 19.0850,
+        "longitude": 72.9060
+      },
+      {
+        "latitude": 19.0740,
+        "longitude": 72.9100
+      },
+      {
+        "latitude": 19.0680,
+        "longitude": 72.9000
+      }
     ]
   },
   {
     "id": "hz_004",
-    "name": "Flooding Prone / Waterlogging",
-    "riskScore": 6,
-    "activeHours": { "start": 0, "end": 24 },
+    "name": "Waterlogging Zone",
+    "riskScore": 5,
+    "activeHours": {
+      "start": 0,
+      "end": 24
+    },
     "type": "weather",
-    "description": "Severe waterlogging during monsoons, impassable",
+    "description": "Heavy waterlogging during monsoons. Often impassable in July through September.",
     "polygon": [
-      { "latitude": 19.0650, "longitude": 72.8820 },
-      { "latitude": 19.0680, "longitude": 72.8850 },
-      { "latitude": 19.0650, "longitude": 72.8890 },
-      { "latitude": 19.0620, "longitude": 72.8850 }
+      {
+        "latitude": 19.0540,
+        "longitude": 72.8740
+      },
+      {
+        "latitude": 19.0680,
+        "longitude": 72.8780
+      },
+      {
+        "latitude": 19.0720,
+        "longitude": 72.8920
+      },
+      {
+        "latitude": 19.0600,
+        "longitude": 72.8980
+      },
+      {
+        "latitude": 19.0500,
+        "longitude": 72.8880
+      }
     ]
   },
   {
     "id": "hz_005",
-    "name": "Accident Hotspot",
-    "riskScore": 8,
-    "activeHours": { "start": 18, "end": 23 },
+    "name": "Accident-Prone Junction",
+    "riskScore": 6,
+    "activeHours": {
+      "start": 17,
+      "end": 23
+    },
     "type": "traffic",
-    "description": "Blind curve with a history of pedestrian accidents",
+    "description": "Blind curve with heavy traffic and several pedestrian incidents during evening rush.",
     "polygon": [
-      { "latitude": 19.0880, "longitude": 72.8750 },
-      { "latitude": 19.0910, "longitude": 72.8750 },
-      { "latitude": 19.0910, "longitude": 72.8780 },
-      { "latitude": 19.0880, "longitude": 72.8780 }
+      {
+        "latitude": 19.0850,
+        "longitude": 72.8680
+      },
+      {
+        "latitude": 19.0960,
+        "longitude": 72.8700
+      },
+      {
+        "latitude": 19.0980,
+        "longitude": 72.8820
+      },
+      {
+        "latitude": 19.0880,
+        "longitude": 72.8840
+      },
+      {
+        "latitude": 19.0820,
+        "longitude": 72.8760
+      }
     ]
   },
   {
     "id": "hz_006",
-    "name": "Protest / Riot Zone",
-    "riskScore": 10,
-    "activeHours": { "start": 8, "end": 20 },
+    "name": "Unrest Reported",
+    "riskScore": 8,
+    "activeHours": {
+      "start": 8,
+      "end": 22
+    },
     "type": "unrest",
-    "description": "Ongoing civil unrest reported, avoid area",
+    "description": "Tensions reported in this pocket. Consider taking a different route for now.",
     "polygon": [
-      { "latitude": 19.0550, "longitude": 72.8950 },
-      { "latitude": 19.0580, "longitude": 72.8970 },
-      { "latitude": 19.0560, "longitude": 72.9000 },
-      { "latitude": 19.0530, "longitude": 72.8980 }
+      {
+        "latitude": 19.0440,
+        "longitude": 72.8880
+      },
+      {
+        "latitude": 19.0580,
+        "longitude": 72.8900
+      },
+      {
+        "latitude": 19.0640,
+        "longitude": 72.9040
+      },
+      {
+        "latitude": 19.0520,
+        "longitude": 72.9120
+      },
+      {
+        "latitude": 19.0420,
+        "longitude": 72.9020
+      }
     ]
   },
   {
     "id": "hz_007",
-    "name": "Construction Hazard",
+    "name": "Active Construction",
     "riskScore": 4,
-    "activeHours": { "start": 0, "end": 24 },
+    "activeHours": {
+      "start": 0,
+      "end": 24
+    },
     "type": "infrastructure",
-    "description": "Open manholes and debris reported",
+    "description": "Open pits, debris, and uneven footpaths. Watch your step, especially at night.",
     "polygon": [
-      { "latitude": 19.0950, "longitude": 72.8850 },
-      { "latitude": 19.0970, "longitude": 72.8850 },
-      { "latitude": 19.0970, "longitude": 72.8880 },
-      { "latitude": 19.0950, "longitude": 72.8880 }
+      {
+        "latitude": 19.0920,
+        "longitude": 72.8780
+      },
+      {
+        "latitude": 19.1040,
+        "longitude": 72.8820
+      },
+      {
+        "latitude": 19.1060,
+        "longitude": 72.8940
+      },
+      {
+        "latitude": 19.0960,
+        "longitude": 72.8980
+      },
+      {
+        "latitude": 19.0900,
+        "longitude": 72.8880
+      }
     ]
   },
   {
     "id": "hz_008",
-    "name": "Stray Animal Menace",
-    "riskScore": 6,
-    "activeHours": { "start": 19, "end": 6 },
+    "name": "Stray Dog Activity",
+    "riskScore": 4,
+    "activeHours": {
+      "start": 21,
+      "end": 6
+    },
     "type": "animals",
-    "description": "Frequent reports of aggressive strays at night",
+    "description": "Packs of strays reported at night. Locals recommend avoiding this stretch after dark.",
     "polygon": [
-      { "latitude": 19.0700, "longitude": 72.8650 },
-      { "latitude": 19.0720, "longitude": 72.8680 },
-      { "latitude": 19.0680, "longitude": 72.8700 },
-      { "latitude": 19.0660, "longitude": 72.8670 }
+      {
+        "latitude": 19.0620,
+        "longitude": 72.8520
+      },
+      {
+        "latitude": 19.0760,
+        "longitude": 72.8560
+      },
+      {
+        "latitude": 19.0800,
+        "longitude": 72.8700
+      },
+      {
+        "latitude": 19.0680,
+        "longitude": 72.8760
+      },
+      {
+        "latitude": 19.0580,
+        "longitude": 72.8660
+      }
+    ]
+  },
+  {
+    "id": "hz_009",
+    "name": "Low Foot Traffic",
+    "riskScore": 5,
+    "activeHours": {
+      "start": 22,
+      "end": 5
+    },
+    "type": "crowdsourced",
+    "description": "Long stretch with no shops or stalls open late. Better-lit alternatives exist nearby.",
+    "polygon": [
+      {
+        "latitude": 19.1080,
+        "longitude": 72.8560
+      },
+      {
+        "latitude": 19.1200,
+        "longitude": 72.8620
+      },
+      {
+        "latitude": 19.1240,
+        "longitude": 72.8780
+      },
+      {
+        "latitude": 19.1140,
+        "longitude": 72.8820
+      },
+      {
+        "latitude": 19.1040,
+        "longitude": 72.8700
+      }
+    ]
+  },
+  {
+    "id": "hz_010",
+    "name": "Evening Harassment Reports",
+    "riskScore": 7,
+    "activeHours": {
+      "start": 18,
+      "end": 23
+    },
+    "type": "crime",
+    "description": "User reports of catcalling and harassment around evening hours.",
+    "polygon": [
+      {
+        "latitude": 19.0380,
+        "longitude": 72.8620
+      },
+      {
+        "latitude": 19.0500,
+        "longitude": 72.8680
+      },
+      {
+        "latitude": 19.0540,
+        "longitude": 72.8820
+      },
+      {
+        "latitude": 19.0420,
+        "longitude": 72.8860
+      },
+      {
+        "latitude": 19.0340,
+        "longitude": 72.8760
+      }
+    ]
+  },
+  {
+    "id": "hz_011",
+    "name": "Broken Footpath",
+    "riskScore": 3,
+    "activeHours": {
+      "start": 0,
+      "end": 24
+    },
+    "type": "infrastructure",
+    "description": "Pavement in poor condition with open drain covers. Walk carefully.",
+    "polygon": [
+      {
+        "latitude": 19.1280,
+        "longitude": 72.8880
+      },
+      {
+        "latitude": 19.1380,
+        "longitude": 72.8920
+      },
+      {
+        "latitude": 19.1400,
+        "longitude": 72.9020
+      },
+      {
+        "latitude": 19.1300,
+        "longitude": 72.9060
+      },
+      {
+        "latitude": 19.1240,
+        "longitude": 72.8960
+      }
+    ]
+  },
+  {
+    "id": "hz_012",
+    "name": "Late-Night Traffic Risk",
+    "riskScore": 6,
+    "activeHours": {
+      "start": 23,
+      "end": 4
+    },
+    "type": "traffic",
+    "description": "High incidents of rash driving on weekend late nights near the main highway.",
+    "polygon": [
+      {
+        "latitude": 19.1000,
+        "longitude": 72.8900
+      },
+      {
+        "latitude": 19.1140,
+        "longitude": 72.8960
+      },
+      {
+        "latitude": 19.1180,
+        "longitude": 72.9100
+      },
+      {
+        "latitude": 19.1060,
+        "longitude": 72.9160
+      },
+      {
+        "latitude": 19.0960,
+        "longitude": 72.9040
+      }
+    ]
+  },
+  {
+    "id": "hz_013",
+    "name": "Isolated Under-Bridge",
+    "riskScore": 6,
+    "activeHours": {
+      "start": 20,
+      "end": 6
+    },
+    "type": "infrastructure",
+    "description": "Dark stretch under the flyover with limited visibility. Uncomfortable alone.",
+    "polygon": [
+      {
+        "latitude": 19.0820,
+        "longitude": 72.8500
+      },
+      {
+        "latitude": 19.0920,
+        "longitude": 72.8540
+      },
+      {
+        "latitude": 19.0940,
+        "longitude": 72.8640
+      },
+      {
+        "latitude": 19.0860,
+        "longitude": 72.8680
+      },
+      {
+        "latitude": 19.0800,
+        "longitude": 72.8600
+      }
+    ]
+  },
+  {
+    "id": "hz_014",
+    "name": "Market Closure Zone",
+    "riskScore": 4,
+    "activeHours": {
+      "start": 22,
+      "end": 6
+    },
+    "type": "crowdsourced",
+    "description": "Busy market by day, completely shuttered at night. Not much pedestrian activity.",
+    "polygon": [
+      {
+        "latitude": 19.0900,
+        "longitude": 72.9080
+      },
+      {
+        "latitude": 19.1020,
+        "longitude": 72.9120
+      },
+      {
+        "latitude": 19.1040,
+        "longitude": 72.9240
+      },
+      {
+        "latitude": 19.0940,
+        "longitude": 72.9280
+      },
+      {
+        "latitude": 19.0860,
+        "longitude": 72.9180
+      }
+    ]
+  },
+  {
+    "id": "hz_015",
+    "name": "Chain-Snatching Reports",
+    "riskScore": 7,
+    "activeHours": {
+      "start": 19,
+      "end": 2
+    },
+    "type": "crime",
+    "description": "Chain-snatching incidents by two-wheelers reported here recently.",
+    "polygon": [
+      {
+        "latitude": 19.0480,
+        "longitude": 72.8400
+      },
+      {
+        "latitude": 19.0620,
+        "longitude": 72.8440
+      },
+      {
+        "latitude": 19.0660,
+        "longitude": 72.8580
+      },
+      {
+        "latitude": 19.0540,
+        "longitude": 72.8620
+      },
+      {
+        "latitude": 19.0440,
+        "longitude": 72.8520
+      }
+    ]
+  },
+  {
+    "id": "hz_016",
+    "name": "Elevated Night Risk",
+    "riskScore": 5,
+    "activeHours": {
+      "start": 23,
+      "end": 5
+    },
+    "type": "crowdsourced",
+    "description": "Residential stretch — users report feeling uneasy walking alone late at night.",
+    "polygon": [
+      {
+        "latitude": 19.1160,
+        "longitude": 72.8400
+      },
+      {
+        "latitude": 19.1300,
+        "longitude": 72.8460
+      },
+      {
+        "latitude": 19.1340,
+        "longitude": 72.8620
+      },
+      {
+        "latitude": 19.1220,
+        "longitude": 72.8680
+      },
+      {
+        "latitude": 19.1120,
+        "longitude": 72.8560
+      }
     ]
   }
 ]

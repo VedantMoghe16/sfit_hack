@@ -9,19 +9,18 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="VAJRA Guardian Path — Live safety tracking for emergency contacts">
+    <meta name="description" content="VAJRA — keep your loved ones safe on the way home">
     <title>VAJRA — Live Tracking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
             --bg: #07070a;
             --bg-elevated: #0e0e14;
-            --surface: rgba(12, 12, 18, 0.95);
-            --surface-raised: rgba(18, 18, 26, 0.97);
+            --surface: rgba(14, 14, 20, 0.96);
+            --surface-raised: rgba(20, 20, 28, 0.97);
 
             --accent: #a78bfa;
             --accent-dim: rgba(167, 139, 250, 0.15);
@@ -40,20 +39,17 @@
             --blue-dim: rgba(56, 189, 248, 0.12);
 
             --text: #f1f1f6;
-            --text-secondary: rgba(241, 241, 246, 0.65);
-            --text-muted: rgba(241, 241, 246, 0.38);
+            --text-secondary: rgba(241, 241, 246, 0.72);
+            --text-muted: rgba(241, 241, 246, 0.45);
             --glass: rgba(167, 139, 250, 0.04);
             --glass-hover: rgba(167, 139, 250, 0.08);
-            --border: rgba(167, 139, 250, 0.08);
-            --border-strong: rgba(167, 139, 250, 0.15);
+            --border: rgba(167, 139, 250, 0.09);
+            --border-strong: rgba(167, 139, 250, 0.17);
 
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-left: env(safe-area-inset-left, 0px);
-            --safe-right: env(safe-area-inset-right, 0px);
 
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
             --radius-sm: 10px;
             --radius-md: 14px;
@@ -68,7 +64,8 @@
             padding: 0;
         }
 
-        html, body {
+        html,
+        body {
             font-family: var(--font);
             background: var(--bg);
             color: var(--text);
@@ -87,9 +84,7 @@
             flex-direction: column;
         }
 
-        /* ═══════════════════════════════════════════
-           TOP BAR
-           ═══════════════════════════════════════════ */
+        /* ─── TOP BAR ─── */
         #topbar {
             position: absolute;
             top: 0;
@@ -98,9 +93,9 @@
             z-index: 50;
             padding: calc(var(--safe-top) + 12px) 16px 16px;
             background: linear-gradient(180deg,
-                rgba(7,7,10,0.92) 0%,
-                rgba(7,7,10,0.7) 50%,
-                transparent 100%);
+                    rgba(7, 7, 10, 0.92) 0%,
+                    rgba(7, 7, 10, 0.65) 55%,
+                    transparent 100%);
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -116,15 +111,15 @@
         }
 
         .brand-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
             background: linear-gradient(135deg, var(--accent-solid), #6d28d9);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 16px;
+            font-size: 17px;
             color: white;
             letter-spacing: -1px;
             box-shadow: 0 4px 20px var(--accent-glow);
@@ -138,35 +133,33 @@
 
         .brand-text .name {
             font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 2.5px;
-            color: var(--accent);
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: var(--text);
         }
 
         .brand-text .sub {
-            font-family: var(--font-mono);
-            font-size: 9px;
+            font-size: 11px;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0.2px;
+            font-weight: 500;
         }
 
+        /* ─── Status pill (friendly, not techy) ─── */
         .status-chip {
             pointer-events: auto;
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 7px 12px;
+            padding: 8px 13px;
             border-radius: 100px;
             background: var(--surface);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--border-strong);
-            font-family: var(--font-mono);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
             white-space: nowrap;
             transition: all 0.3s ease;
             color: var(--text-secondary);
@@ -192,58 +185,103 @@
             animation: pulse-ring 2s ease-out infinite;
         }
 
-        .status-safe { color: var(--safe); border-color: rgba(52,211,153,.3); background: rgba(52,211,153,.06); }
-        .status-safe .pulse-dot { background: var(--safe); }
-        .status-risk { color: var(--danger); border-color: rgba(244,63,94,.4); background: rgba(244,63,94,.08); animation: chip-pulse 1.2s ease-in-out infinite; }
-        .status-risk .pulse-dot { background: var(--danger); }
-        .status-nosignal { color: var(--warn); border-color: rgba(251,191,36,.25); }
-        .status-nosignal .pulse-dot { background: var(--warn); }
+        .status-safe {
+            color: var(--safe);
+            border-color: rgba(52, 211, 153, .3);
+            background: rgba(52, 211, 153, .08);
+        }
+
+        .status-safe .pulse-dot {
+            background: var(--safe);
+        }
+
+        .status-risk {
+            color: var(--danger);
+            border-color: rgba(244, 63, 94, .4);
+            background: rgba(244, 63, 94, .1);
+            animation: chip-pulse 1.2s ease-in-out infinite;
+        }
+
+        .status-risk .pulse-dot {
+            background: var(--danger);
+        }
+
+        .status-nosignal {
+            color: var(--warn);
+            border-color: rgba(251, 191, 36, .25);
+        }
+
+        .status-nosignal .pulse-dot {
+            background: var(--warn);
+        }
 
         @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: .6; }
-            100% { transform: scale(2.4); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: .6;
+            }
+
+            100% {
+                transform: scale(2.4);
+                opacity: 0;
+            }
         }
 
         @keyframes chip-pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,.4); }
-            50% { box-shadow: 0 0 0 10px rgba(244,63,94,0); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(244, 63, 94, .4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(244, 63, 94, 0);
+            }
         }
 
-        /* ═══════════════════════════════════════════
-           ALERT BANNER
-           ═══════════════════════════════════════════ */
+        /* ─── ALERT BANNER ─── */
         #alert-banner {
             position: absolute;
             top: calc(var(--safe-top) + 68px);
             left: 12px;
             right: 12px;
             z-index: 49;
-            background: linear-gradient(135deg, rgba(244,63,94,.95), rgba(190,18,60,.92));
+            background: linear-gradient(135deg, rgba(244, 63, 94, .96), rgba(190, 18, 60, .93));
             color: white;
-            padding: 11px 14px;
+            padding: 12px 14px;
             border-radius: var(--radius-md);
-            font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 6px 24px rgba(244,63,94,.35);
+            letter-spacing: 0.1px;
+            box-shadow: 0 6px 24px rgba(244, 63, 94, .35);
             display: none;
             align-items: center;
-            gap: 8px;
-            animation: slide-down .35s cubic-bezier(.2,.9,.3,1.1);
+            gap: 10px;
+            animation: slide-down .35s cubic-bezier(.2, .9, .3, 1.1);
         }
 
-        #alert-banner.visible { display: flex; }
-        #alert-banner .icon { font-size: 16px; flex-shrink: 0; }
+        #alert-banner.visible {
+            display: flex;
+        }
+
+        #alert-banner .icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
 
         @keyframes slide-down {
-            from { transform: translateY(-16px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-16px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        /* ═══════════════════════════════════════════
-           MAP
-           ═══════════════════════════════════════════ */
+        /* ─── MAP ─── */
         #map {
             flex: 1;
             width: 100%;
@@ -261,10 +299,10 @@
             gap: 12px;
             color: var(--text-secondary);
             background-image:
-                radial-gradient(circle at 30% 20%, rgba(167,139,250,.06) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(56,189,248,.05) 0%, transparent 50%),
-                linear-gradient(rgba(167,139,250,.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(167,139,250,.03) 1px, transparent 1px);
+                radial-gradient(circle at 30% 20%, rgba(167, 139, 250, .06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(56, 189, 248, .05) 0%, transparent 50%),
+                linear-gradient(rgba(167, 139, 250, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(167, 139, 250, .03) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
         }
 
@@ -273,23 +311,21 @@
             filter: drop-shadow(0 4px 14px var(--accent-glow));
         }
 
-        /* ═══════════════════════════════════════════
-           MAP FABS
-           ═══════════════════════════════════════════ */
+        /* ─── MAP FABS ─── */
         .map-fabs {
             position: absolute;
             right: 14px;
-            top: calc(var(--safe-top) + 76px);
+            top: calc(var(--safe-top) + 80px);
             z-index: 30;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .fab {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: var(--surface);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -300,52 +336,71 @@
             justify-content: center;
             cursor: pointer;
             transition: transform .12s ease, background .2s ease;
-            font-size: 16px;
+            font-size: 18px;
         }
 
-        .fab:active { transform: scale(.88); background: var(--glass-hover); }
+        .fab:active {
+            transform: scale(.88);
+            background: var(--glass-hover);
+        }
 
-        /* ═══════════════════════════════════════════
-           LEGEND
-           ═══════════════════════════════════════════ */
+        .fab.active {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ─── LEGEND ─── */
         .legend {
             position: absolute;
             left: 12px;
-            bottom: calc(var(--sheet-peek, 310px) + 12px);
+            bottom: calc(var(--sheet-peek, 320px) + 12px);
             z-index: 30;
             background: var(--surface);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            padding: 8px 10px;
+            padding: 9px 11px;
             border-radius: var(--radius-sm);
-            font-family: var(--font-mono);
-            font-size: 9px;
+            font-size: 11px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            letter-spacing: 0.8px;
+            gap: 6px;
+            letter-spacing: 0.1px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .legend-item .dot {
-            width: 10px;
+            width: 12px;
             height: 3px;
             border-radius: 2px;
+            flex-shrink: 0;
         }
 
-        .legend-item .dot.user { background: var(--blue); }
-        .legend-item .dot.route { background: var(--accent); }
+        .legend-item .dot.user {
+            background: var(--blue);
+        }
 
-        /* ═══════════════════════════════════════════
-           BOTTOM SHEET
-           ═══════════════════════════════════════════ */
+        .legend-item .dot.route {
+            background: var(--accent);
+        }
+
+        .legend-item .dot.hazard {
+            background: var(--danger);
+            height: 10px;
+            width: 10px;
+            border-radius: 3px;
+            opacity: 0.6;
+        }
+
+        /* ─── BOTTOM SHEET ─── */
         #sheet {
             position: absolute;
             bottom: 0;
@@ -358,11 +413,11 @@
             border-top: 1px solid var(--border-strong);
             border-radius: var(--radius-xl) var(--radius-xl) 0 0;
             box-shadow:
-                0 -16px 50px rgba(0,0,0,.6),
-                0 -1px 0 rgba(167,139,250,.05);
+                0 -16px 50px rgba(0, 0, 0, .6),
+                0 -1px 0 rgba(167, 139, 250, .05);
             padding: 6px 16px calc(var(--safe-bottom) + 16px);
-            transition: transform .35s cubic-bezier(.2,.9,.3,1);
-            max-height: 80vh;
+            transition: transform .35s cubic-bezier(.2, .9, .3, 1);
+            max-height: 82vh;
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
@@ -371,7 +426,7 @@
         }
 
         #sheet.collapsed {
-            transform: translateY(calc(100% - 140px));
+            transform: translateY(calc(100% - 160px));
             overflow: hidden;
         }
 
@@ -386,13 +441,13 @@
         }
 
         .sheet-handle .bar {
-            width: 36px;
+            width: 40px;
             height: 4px;
             border-radius: 100px;
-            background: rgba(167,139,250,.2);
+            background: rgba(167, 139, 250, .25);
         }
 
-        /* ── Header ── */
+        /* ─── Header ─── */
         .sheet-head {
             display: flex;
             align-items: flex-start;
@@ -404,21 +459,20 @@
 
         .sheet-title h1 {
             margin: 0;
-            font-size: clamp(18px, 5vw, 22px);
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            line-height: 1.15;
+            font-size: clamp(17px, 4.6vw, 20px);
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            line-height: 1.2;
             color: var(--text);
         }
 
         .sheet-title .meta {
-            margin-top: 3px;
-            font-size: 11px;
+            margin-top: 4px;
+            font-size: 12px;
             color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 6px;
-            font-family: var(--font-mono);
             font-weight: 500;
         }
 
@@ -434,29 +488,101 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .2; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .2;
+            }
         }
 
         .time-pill {
             flex-shrink: 0;
-            padding: 5px 9px;
+            padding: 6px 10px;
             background: var(--glass);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: var(--font-mono);
-            font-size: 10px;
+            border-radius: 10px;
+            font-size: 11px;
             color: var(--accent);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1px;
             white-space: nowrap;
             font-weight: 600;
         }
 
-        /* ── Info Cards ── */
+        /* ─── BIG ETA BLOCK (the hero) ─── */
+        .eta-hero {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(52, 211, 153, .08), rgba(167, 139, 250, .04));
+            border: 1px solid rgba(52, 211, 153, .18);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+
+        .eta-hero.warn {
+            background: linear-gradient(135deg, rgba(251, 191, 36, .08), rgba(167, 139, 250, .04));
+            border-color: rgba(251, 191, 36, .2);
+        }
+
+        .eta-hero.risk {
+            background: linear-gradient(135deg, rgba(244, 63, 94, .08), rgba(167, 139, 250, .04));
+            border-color: rgba(244, 63, 94, .22);
+        }
+
+        .eta-hero .eta-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .eta-hero .eta-main {
+            font-size: clamp(28px, 8vw, 34px);
+            font-weight: 800;
+            color: var(--safe);
+            line-height: 1.05;
+            letter-spacing: -1px;
+        }
+
+        .eta-hero.warn .eta-main {
+            color: var(--warn);
+        }
+
+        .eta-hero.risk .eta-main {
+            color: var(--danger);
+        }
+
+        .eta-hero .eta-sub {
+            margin-top: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .eta-hero .eta-sub .sep {
+            opacity: 0.4;
+            font-weight: 700;
+        }
+
+        .eta-hero .eta-sub .arrival {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ─── Info cards ─── */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 9px;
             margin-bottom: 12px;
             flex-shrink: 0;
         }
@@ -464,28 +590,18 @@
         .info-card {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 10px 12px;
+            padding: 11px 13px;
             border-radius: var(--radius-md);
             position: relative;
             overflow: hidden;
             min-width: 0;
         }
 
-        .info-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 0%, rgba(167,139,250,.03) 100%);
-            pointer-events: none;
-        }
-
         .info-card label {
             display: block;
-            font-family: var(--font-mono);
-            font-size: 9px;
+            font-size: 11px;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 0.1px;
             margin-bottom: 4px;
             font-weight: 500;
         }
@@ -500,84 +616,69 @@
         }
 
         .info-card .sub {
-            font-family: var(--font-mono);
-            font-size: 9px;
+            font-size: 11px;
             color: var(--text-muted);
             margin-top: 2px;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.1px;
             font-weight: 500;
         }
 
-        /* ── Time Indicator ── */
+        /* ─── Time of day indicator ─── */
         .time-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
+            gap: 9px;
+            padding: 10px 13px;
             background: var(--glass);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            margin-bottom: 12px;
-            font-family: var(--font-mono);
-            font-size: 10px;
+            margin-bottom: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1px;
+            font-weight: 500;
             flex-shrink: 0;
         }
 
         .time-indicator .time-icon {
-            font-size: 14px;
+            font-size: 16px;
             flex-shrink: 0;
         }
 
         .time-indicator .time-label {
             font-weight: 600;
+            color: var(--text);
         }
 
-        .time-indicator.night { border-color: rgba(244,63,94,.2); color: var(--danger); }
-        .time-indicator.evening { border-color: rgba(251,191,36,.2); color: var(--warn); }
-        .time-indicator.day { border-color: rgba(52,211,153,.2); color: var(--safe); }
-
-        /* ── Google Maps ETA Replica ── */
-        .maps-eta-block {
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
+        .time-indicator.night {
+            border-color: rgba(244, 63, 94, .2);
         }
 
-        .maps-eta-block .eta-main {
-            font-size: 34px;
-            font-weight: 700;
-            color: #34d399; /* Green for fast, standard Google Maps vibe */
-            line-height: 1.1;
-            letter-spacing: -1px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        .time-indicator.night .time-label {
+            color: var(--danger);
         }
 
-        .maps-eta-block .eta-sub {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .time-indicator.evening {
+            border-color: rgba(251, 191, 36, .2);
         }
 
-        .maps-eta-block .eta-sub .separator {
-            font-weight: 900;
-            opacity: 0.5;
+        .time-indicator.evening .time-label {
+            color: var(--warn);
         }
 
-        /* ── Primary Actions ── */
+        .time-indicator.day {
+            border-color: rgba(52, 211, 153, .2);
+        }
+
+        .time-indicator.day .time-label {
+            color: var(--safe);
+        }
+
+        /* ─── Primary actions ─── */
         .primary-actions {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 9px;
             margin-bottom: 12px;
             flex-shrink: 0;
         }
@@ -585,7 +686,7 @@
         .action-primary {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 13px;
             padding: 14px 16px;
             border-radius: var(--radius-md);
             border: 1px solid;
@@ -594,7 +695,7 @@
             transition: transform .1s ease, background .2s ease, box-shadow .2s ease;
             text-decoration: none;
             font-family: var(--font);
-            min-height: 52px;
+            min-height: 56px;
         }
 
         .action-primary:active {
@@ -602,13 +703,13 @@
         }
 
         .action-primary .action-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 19px;
             flex-shrink: 0;
         }
 
@@ -620,15 +721,14 @@
         .action-primary .action-label {
             font-weight: 700;
             font-size: 14px;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
         }
 
         .action-primary .action-desc {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            margin-top: 1px;
-            opacity: .7;
-            letter-spacing: 0.3px;
+            font-size: 12px;
+            margin-top: 2px;
+            opacity: .75;
+            letter-spacing: 0.1px;
             font-weight: 500;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -636,60 +736,60 @@
         }
 
         .action-primary .action-chevron {
-            font-size: 16px;
+            font-size: 18px;
             opacity: .5;
             flex-shrink: 0;
         }
 
-        /* Call User */
         .action-call-user {
-            background: rgba(52,211,153,.06);
-            border-color: rgba(52,211,153,.2);
+            background: rgba(52, 211, 153, .06);
+            border-color: rgba(52, 211, 153, .22);
             color: var(--safe);
         }
+
         .action-call-user .action-icon {
             background: var(--safe-dim);
             color: var(--safe);
         }
+
         .action-call-user:active {
-            background: rgba(52,211,153,.12);
-            box-shadow: 0 4px 20px rgba(52,211,153,.15);
+            background: rgba(52, 211, 153, .12);
         }
 
-        /* Call Police */
         .action-call-police {
-            background: rgba(244,63,94,.05);
-            border-color: rgba(244,63,94,.2);
+            background: rgba(244, 63, 94, .05);
+            border-color: rgba(244, 63, 94, .22);
             color: var(--danger);
         }
+
         .action-call-police .action-icon {
             background: var(--danger-dim);
             color: var(--danger);
         }
+
         .action-call-police:active {
-            background: rgba(244,63,94,.1);
-            box-shadow: 0 4px 20px rgba(244,63,94,.15);
+            background: rgba(244, 63, 94, .1);
         }
 
-        /* Open Maps */
         .action-open-maps {
-            background: rgba(56,189,248,.05);
-            border-color: rgba(56,189,248,.18);
+            background: rgba(56, 189, 248, .05);
+            border-color: rgba(56, 189, 248, .2);
             color: var(--blue);
         }
+
         .action-open-maps .action-icon {
             background: var(--blue-dim);
             color: var(--blue);
         }
+
         .action-open-maps:active {
-            background: rgba(56,189,248,.1);
-            box-shadow: 0 4px 20px rgba(56,189,248,.15);
+            background: rgba(56, 189, 248, .1);
         }
 
-        /* ── Secondary Actions ── */
+        /* ─── Secondary actions ─── */
         .secondary-actions {
             display: flex;
-            gap: 8px;
+            gap: 9px;
             flex-shrink: 0;
         }
 
@@ -698,18 +798,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 10px 8px;
+            gap: 7px;
+            padding: 11px 8px;
             border-radius: var(--radius-sm);
             background: var(--glass);
             border: 1px solid var(--border);
             color: var(--text-secondary);
             cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: 10px;
+            font-family: var(--font);
+            font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
+            letter-spacing: 0.1px;
             transition: transform .1s ease, background .15s ease, color .15s ease;
             text-decoration: none;
             min-height: 42px;
@@ -730,24 +829,21 @@
             flex-shrink: 0;
         }
 
-        /* ═══════════════════════════════════════════
-           TOAST
-           ═══════════════════════════════════════════ */
+        /* ─── Toast ─── */
         .toast {
             position: fixed;
             bottom: calc(var(--safe-bottom) + 100px);
             left: 50%;
             transform: translateX(-50%) translateY(12px);
-            background: rgba(10,10,14,.97);
+            background: rgba(10, 10, 14, .97);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-strong);
             color: var(--accent);
-            padding: 10px 16px;
+            padding: 11px 18px;
             border-radius: 100px;
-            font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1px;
             z-index: 100;
             opacity: 0;
             pointer-events: none;
@@ -762,65 +858,71 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ═══════════════════════════════════════════
-           NO SESSION STATE
-           ═══════════════════════════════════════════ */
+        /* ─── No session state ─── */
         .no-session {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 20px 0 10px;
+            padding: 24px 0 14px;
         }
 
         .no-session .ns-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 46px;
+            margin-bottom: 14px;
             filter: drop-shadow(0 4px 14px var(--accent-glow));
         }
 
         .no-session h2 {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 6px;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 7px;
             color: var(--text);
+            letter-spacing: -0.2px;
         }
 
         .no-session p {
-            font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 13px;
             color: var(--text-muted);
-            line-height: 1.6;
-            letter-spacing: 0.3px;
-            max-width: 280px;
+            line-height: 1.55;
+            letter-spacing: 0.1px;
+            max-width: 300px;
+            font-weight: 500;
         }
 
-        /* ═══════════════════════════════════════════
-           DESKTOP ADJUSTMENTS
-           ═══════════════════════════════════════════ */
+        /* ─── Desktop ─── */
         @media (min-width: 600px) {
             #sheet {
                 left: 50%;
                 transform: translateX(-50%);
-                max-width: 420px;
+                max-width: 440px;
                 border-radius: var(--radius-xl);
                 bottom: 16px;
-                box-shadow: 0 16px 50px rgba(0,0,0,.7);
+                box-shadow: 0 16px 50px rgba(0, 0, 0, .7);
             }
 
             #sheet.collapsed {
-                transform: translateX(-50%) translateY(calc(100% - 140px));
+                transform: translateX(-50%) translateY(calc(100% - 160px));
             }
 
-            .legend { max-width: 130px; }
+            .legend {
+                max-width: 150px;
+            }
         }
 
-        /* ═══════════════════════════════════════════
-           SCROLLBAR
-           ═══════════════════════════════════════════ */
-        #sheet::-webkit-scrollbar { width: 4px; }
-        #sheet::-webkit-scrollbar-track { background: transparent; }
-        #sheet::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+        /* ─── Scrollbar ─── */
+        #sheet::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #sheet::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #sheet::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 4px;
+        }
     </style>
 </head>
 
@@ -832,12 +934,12 @@
                 <div class="brand-logo">V</div>
                 <div class="brand-text">
                     <span class="name">VAJRA</span>
-                    <span class="sub">Live Tracking</span>
+                    <span class="sub">Keeping you in sight</span>
                 </div>
             </div>
             <div id="status-chip" class="status-chip status-nosignal">
                 <span class="pulse-dot"></span>
-                <span id="status-label">Init</span>
+                <span id="status-label">Connecting…</span>
             </div>
         </header>
 
@@ -847,24 +949,27 @@
         </div>
 
         <div class="map-fabs">
-            <button class="fab" onclick="recenterMap()" title="Recenter" id="btn-recenter">⊕</button>
+            <button class="fab" onclick="toggleFollowMode()" title="Follow user" id="btn-follow">📍</button>
             <button class="fab" onclick="toggleSheet()" title="Toggle panel" id="btn-toggle-sheet">☰</button>
         </div>
 
         <div id="map">
             <div class="map-fallback" id="map-fallback">
                 <div class="pin">📍</div>
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;">
-                    Initializing map…</div>
+                <div style="font-size:13px;color:var(--text-secondary);letter-spacing:0.1px;font-weight:500;">
+                    Loading map…</div>
             </div>
         </div>
 
         <div class="legend" id="legend">
             <div class="legend-item">
-                <div class="dot route"></div>Safe route
+                <div class="dot route"></div>Planned route
             </div>
             <div class="legend-item">
-                <div class="dot user"></div>User path
+                <div class="dot user"></div>Where they've been
+            </div>
+            <div class="legend-item">
+                <div class="dot hazard"></div>Areas to be careful
             </div>
         </div>
 
@@ -875,10 +980,10 @@
 
             <div class="sheet-head">
                 <div class="sheet-title">
-                    <h1 id="userName">Awaiting session…</h1>
+                    <h1 id="userName">Waiting for trip…</h1>
                     <div class="meta">
                         <span class="live-dot" id="live-dot"></span>
-                        <span id="userPhone">No active tracking</span>
+                        <span id="userPhone">No active tracking yet</span>
                     </div>
                 </div>
                 <div class="time-pill" id="lastUpdated">— —</div>
@@ -887,41 +992,42 @@
             <!-- Active session content -->
             <div id="session-content" style="display:none;">
 
-                <!-- Google Maps Exact Replica ETA Block -->
-                <div id="maps-eta-block" class="maps-eta-block" style="display:none;">
-                    <div class="eta-main" id="etaMainText">-- min</div>
-                    <div class="eta-sub" id="etaSubText">
-                        <span id="etaDistance">-- km</span>
-                        <span class="separator">·</span>
-                        <span id="etaArrivalTime">--:--</span>
+                <!-- Hero ETA block -->
+                <div id="eta-hero" class="eta-hero" style="display:none;">
+                    <div class="eta-label">Arriving in</div>
+                    <div class="eta-main" id="etaMainText">—</div>
+                    <div class="eta-sub">
+                        <span id="etaDistance">—</span>
+                        <span class="sep">·</span>
+                        <span>Estimated arrival <span class="arrival" id="etaArrivalTime">—</span></span>
                     </div>
                 </div>
 
                 <div class="info-grid">
                     <div class="info-card">
-                        <label>Destination</label>
+                        <label>Heading to</label>
                         <div class="value" id="destText">—</div>
-                        <div class="sub" id="destSub">Not set</div>
+                        <div class="sub" id="destSub">Setting up…</div>
                     </div>
                     <div class="info-card">
-                        <label>Safety</label>
-                        <div class="value" id="safetyText">Analyzing</div>
-                        <div class="sub" id="safetySub">Awaiting data</div>
+                        <label>Route safety</label>
+                        <div class="value" id="safetyText">Checking…</div>
+                        <div class="sub" id="safetySub">Just a moment</div>
                     </div>
                 </div>
 
                 <div class="time-indicator day" id="time-indicator">
                     <span class="time-icon">☀️</span>
-                    <span>Daytime travel —</span>
-                    <span class="time-label">Standard risk level</span>
+                    <span>Traveling during</span>
+                    <span class="time-label">daytime</span>
                 </div>
 
                 <div class="primary-actions">
                     <a href="#" id="btnCallUser" class="action-primary action-call-user" onclick="return false;">
                         <div class="action-icon">📞</div>
                         <div class="action-content">
-                            <div class="action-label">Call User</div>
-                            <div class="action-desc" id="callUserDesc">No phone available</div>
+                            <div class="action-label">Call them</div>
+                            <div class="action-desc" id="callUserDesc">Number not available</div>
                         </div>
                         <span class="action-chevron">›</span>
                     </a>
@@ -929,8 +1035,8 @@
                     <button id="btnCallPolice" class="action-primary action-call-police" onclick="callNearbyPolice()">
                         <div class="action-icon">🚔</div>
                         <div class="action-content">
-                            <div class="action-label">Call Nearby Police</div>
-                            <div class="action-desc" id="callPoliceDesc">Finding nearest station…</div>
+                            <div class="action-label">Call nearest police</div>
+                            <div class="action-desc" id="callPoliceDesc">Finding closest station…</div>
                         </div>
                         <span class="action-chevron">›</span>
                     </button>
@@ -939,7 +1045,7 @@
                         <div class="action-icon">🗺️</div>
                         <div class="action-content">
                             <div class="action-label">Open in Google Maps</div>
-                            <div class="action-desc" id="openMapsDesc">View user's live location</div>
+                            <div class="action-desc" id="openMapsDesc">See live location</div>
                         </div>
                         <span class="action-chevron">›</span>
                     </button>
@@ -948,11 +1054,11 @@
                 <div class="secondary-actions">
                     <button class="action-secondary" onclick="copyCoords()" id="btn-copy-gps">
                         <span class="icon">📍</span>
-                        <span>Copy GPS</span>
+                        <span>Copy location</span>
                     </button>
                     <button class="action-secondary" onclick="shareLink()" id="btn-share">
                         <span class="icon">↗️</span>
-                        <span>Share Link</span>
+                        <span>Share this page</span>
                     </button>
                 </div>
             </div>
@@ -960,8 +1066,9 @@
             <!-- No session state -->
             <div id="no-session" class="no-session">
                 <div class="ns-icon">🛡️</div>
-                <h2>No Active Session</h2>
-                <p>This page shows live tracking when a session is active. Use the Telegram bot to start a trip — the tracking link will be shared automatically.</p>
+                <h2>No trip in progress</h2>
+                <p>Live tracking will show up here once a trip starts. Ask them to begin one from the Telegram bot and
+                    you'll get a link.</p>
             </div>
 
         </div>
@@ -970,28 +1077,35 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        /* ────────────────────────────────────────────
+           STATE
+           ──────────────────────────────────────────── */
         let map, userMarker, destMarker, expectedPathLine, actualPathLine;
-        let lastLocation = null, lastPingTime = null, sheetCollapsed = false;
+        let lastLocation = null;        // [lat, lng] of most recent GPS ping
+        let lastPingTime = null;        // ms timestamp of last real ping
+        let sheetCollapsed = false;
         let currentSessionData = null;
         let nearbyPoliceCache = null;
+        let followMode = true;          // map auto-follows user by default
+        let hasEverReceivedLocation = false;
 
         const darkStyle = [
             { elementType: "geometry", stylers: [{ color: "#0c0c14" }] },
             { elementType: "labels.text.stroke", stylers: [{ color: "#07070a" }] },
-            { elementType: "labels.text.fill", stylers: [{ color: "#4a4a5e" }] },
-            { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#7a7a96" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#5a5a72" }] },
+            { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#8a8aa6" }] },
             { featureType: "poi", stylers: [{ visibility: "off" }] },
             { featureType: "road", elementType: "geometry", stylers: [{ color: "#181828" }] },
             { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#10101a" }] },
-            { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#5a5a72" }] },
+            { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#6a6a82" }] },
             { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#222238" }] },
             { featureType: "transit", stylers: [{ visibility: "off" }] },
             { featureType: "water", elementType: "geometry", stylers: [{ color: "#080c16" }] }
         ];
 
-        /* ═══════════════════════════════════════════
+        /* ────────────────────────────────────────────
            GOOGLE MAPS
-           ═══════════════════════════════════════════ */
+           ──────────────────────────────────────────── */
         async function loadGoogleMaps() {
             try {
                 const cfg = await fetch('/config').then(r => r.json());
@@ -1007,7 +1121,7 @@
                 });
             } catch (e) {
                 document.getElementById('map-fallback').innerHTML =
-                    '<div class="pin">📍</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);letter-spacing:0.5px;">Map unavailable — tracking active</div>';
+                    '<div class="pin">📍</div><div style="font-size:13px;color:var(--text-secondary);font-weight:500;">Map unavailable — tracking is still active</div>';
             }
         }
 
@@ -1015,27 +1129,34 @@
             const fb = document.getElementById('map-fallback');
             if (fb) fb.style.display = 'none';
             map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 19.076, lng: 72.877 }, zoom: 14,
+                center: { lat: 19.076, lng: 72.8777 }, zoom: 13,
                 styles: darkStyle,
                 disableDefaultUI: true, gestureHandling: 'greedy', clickableIcons: false
             });
-            userMarker = new google.maps.Marker({
-                position: { lat: 19.076, lng: 72.877 }, map,
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE, scale: 9,
-                    fillColor: "#38bdf8", fillOpacity: 1,
-                    strokeWeight: 3, strokeColor: "#ffffff"
-                }
-            });
+
+            // IMPORTANT: Don't create userMarker upfront at a hardcoded location.
+            // It will be created only when we receive a real GPS ping.
+            // This prevents the "marker stuck in Bandra" look when no live data exists yet.
+
             expectedPathLine = new google.maps.Polyline({
                 path: [], geodesic: true,
-                strokeColor: "#a78bfa", strokeOpacity: .8, strokeWeight: 4, map
+                strokeColor: "#a78bfa", strokeOpacity: .85, strokeWeight: 4, map
             });
             actualPathLine = new google.maps.Polyline({
                 path: [], geodesic: true,
-                strokeColor: "#38bdf8", strokeOpacity: .65, strokeWeight: 3, map
+                strokeColor: "#38bdf8", strokeOpacity: .7, strokeWeight: 3, map
             });
+
+            // If user manually pans/drags the map, turn off follow mode
+            map.addListener('dragstart', () => {
+                if (followMode) {
+                    followMode = false;
+                    updateFollowButton();
+                }
+            });
+
             loadHazardOverlay();
+            updateFollowButton();
         }
 
         async function loadHazardOverlay() {
@@ -1047,20 +1168,30 @@
                     const { start, end } = z.activeHours || { start: 0, end: 24 };
                     const active = start <= end ? now >= start && now < end : now >= start || now < end;
                     const c = z.riskScore >= 7 ? '#f43f5e' : z.riskScore >= 5 ? '#fbbf24' : '#38bdf8';
-                    new google.maps.Polygon({
+                    const poly = new google.maps.Polygon({
                         paths: z.polygon.map(p => ({ lat: p.latitude, lng: p.longitude })),
-                        strokeColor: c, strokeOpacity: active ? .45 : .15,
+                        strokeColor: c, strokeOpacity: active ? .55 : .22,
                         strokeWeight: 1.5,
-                        fillColor: c, fillOpacity: active ? (.06 + z.riskScore / 10 * .12) : .03,
+                        fillColor: c, fillOpacity: active ? (.08 + z.riskScore / 10 * .14) : .04,
                         map
                     });
+
+                    // Friendly tooltip on click
+                    const info = new google.maps.InfoWindow({
+                        content: `<div style="color:#111;font-family:Inter,sans-serif;padding:2px 4px;max-width:240px;">
+                            <div style="font-weight:700;font-size:13px;margin-bottom:4px;">${esc(z.name)}</div>
+                            <div style="font-size:12px;color:#555;line-height:1.4;">${esc(z.description || '')}</div>
+                            <div style="font-size:11px;color:#888;margin-top:6px;">Caution level ${z.riskScore}/10${active ? ' · active now' : ''}</div>
+                        </div>`
+                    });
+                    poly.addListener('click', e => { info.setPosition(e.latLng); info.open(map); });
                 });
             } catch { }
         }
 
-        /* ═══════════════════════════════════════════
-           DATA FETCHING
-           ═══════════════════════════════════════════ */
+        /* ────────────────────────────────────────────
+           FETCH DATA
+           ──────────────────────────────────────────── */
         async function fetchData() {
             const sid = location.hash.replace('#', '').split('?')[0];
             if (!sid) {
@@ -1089,50 +1220,34 @@
             }
         }
 
-        /* ═══════════════════════════════════════════
+        /* ────────────────────────────────────────────
            UI UPDATES
-           ═══════════════════════════════════════════ */
-        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+           ──────────────────────────────────────────── */
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
         function updateUI(data) {
-            // Google Maps Replica ETA
-            const etaBlock = document.getElementById("maps-eta-block");
-            if (data.liveETA && data.liveDistance && data.liveDurationValue) {
-                const arrivalDate = new Date(Date.now() + (data.liveDurationValue * 1000));
-                const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-                
-                document.getElementById("etaMainText").innerText = data.liveETA; // e.g. "15 mins"
-                document.getElementById("etaDistance").innerText = data.liveDistance; // e.g. "5.2 km"
-                document.getElementById("etaArrivalTime").innerText = arrivalStr; // e.g. "10:15 PM"
-                
-                // Color formatting based on safety/speed
-                const isSlow = data.liveETA.includes("hour"); // basic heuristic
-                document.getElementById("etaMainText").style.color = isSlow ? "#fbbf24" : "#34d399";
-                
-                etaBlock.style.display = "flex";
-            } else {
-                etaBlock.style.display = "none";
-            }
+            // ─── ETA hero block ───
+            updateEtaHero(data);
 
-            // Destination
+            // ─── Destination card ───
             document.getElementById("destText").innerText = data.destination || "Unknown";
-            
+
             if (data.currentLocation) {
-                document.getElementById("destSub").innerText = `${data.currentLocation.lat.toFixed(4)}, ${data.currentLocation.lng.toFixed(4)}`;
-                document.getElementById("destSub").style.color = 'var(--text-muted)';
-                document.getElementById("destSub").style.fontWeight = '500';
+                // Show a friendlier line than raw coords
+                const distLabel = data.liveDistance ? `${data.liveDistance} away` : "Getting closer";
+                document.getElementById("destSub").innerText = distLabel;
             } else {
-                document.getElementById("destSub").innerText = "No GPS yet";
-                document.getElementById("destSub").style.color = 'var(--text-muted)';
-                document.getElementById("destSub").style.fontWeight = '500';
+                document.getElementById("destSub").innerText = "Waiting for location…";
             }
 
-            // Header
+            // ─── Header ───
             document.getElementById("userName").innerText = data.destination
-                ? `Tracking → ${data.destination}` : "Active Trip";
-            document.getElementById("userPhone").innerText = data.phone || `Session #${(data.id || '').slice(-6)}`;
+                ? `On the way to ${data.destination}` : "Active trip";
+            document.getElementById("userPhone").innerText = data.phone
+                ? `Tracking ${data.phone}`
+                : `Trip #${(data.id || '').slice(-6)}`;
 
-            // Call user button
+            // ─── Call user button ───
             const callBtn = document.getElementById("btnCallUser");
             const callDesc = document.getElementById("callUserDesc");
             if (data.phone) {
@@ -1141,98 +1256,282 @@
                 callDesc.innerText = data.phone;
             } else {
                 callBtn.href = '#';
-                callBtn.onclick = (e) => { e.preventDefault(); showToast("No phone number available"); };
-                callDesc.innerText = "No phone available";
+                callBtn.onclick = (e) => { e.preventDefault(); showToast("No phone number saved for this trip"); };
+                callDesc.innerText = "Number not available";
             }
 
-            // Safety
+            // ─── Route safety card ───
             const q = data.safetyScore?.corridorQuality;
             const score = data.safetyScore?.score;
-            document.getElementById("safetyText").innerText =
-                data.status === "RISK" ? "⚠ AT RISK"
-                    : q ? `${q}` : "Analyzing";
 
+            let safetyLabel;
+            if (data.status === "RISK") safetyLabel = "Needs attention";
+            else if (q === "High") safetyLabel = "Looks safe";
+            else if (q === "Medium") safetyLabel = "Mostly safe";
+            else if (q === "Low") safetyLabel = "Take care";
+            else safetyLabel = "Checking…";
+
+            document.getElementById("safetyText").innerText = safetyLabel;
             const safetyColor = score >= 80 ? 'var(--safe)' : score >= 55 ? 'var(--warn)' : 'var(--danger)';
             document.getElementById("safetyText").style.color = score !== undefined ? safetyColor : '';
 
-            document.getElementById("safetySub").innerText = score !== undefined
-                ? `Score: ${score}/100` : "Awaiting data";
+            if (score !== undefined) {
+                document.getElementById("safetySub").innerText =
+                    score >= 80 ? "Well-lit, frequented route"
+                        : score >= 55 ? "Some areas to watch"
+                            : "Several caution zones nearby";
+            } else {
+                document.getElementById("safetySub").innerText = "Just a moment…";
+            }
 
-            // Time indicator
+            // ─── Time-of-day indicator ───
             updateTimeIndicator(data.safetyScore);
 
-            // Maps desc
+            // ─── Open Maps description ───
             document.getElementById("openMapsDesc").innerText = data.currentLocation
-                ? `${data.currentLocation.lat.toFixed(4)}, ${data.currentLocation.lng.toFixed(4)}`
-                : "View user's live location";
+                ? "See live location"
+                : "Will open once GPS is active";
 
-            // Map markers
-            if (data.currentLocation && map && userMarker) {
+            // ─── MAP UPDATES ───
+            updateMap(data);
+
+            // ─── Status chip / alert banner ───
+            setStatusChip(data);
+        }
+
+        /* ────────────────────────────────────────────
+           ETA HERO — with client-side fallback
+           ──────────────────────────────────────────── */
+        function updateEtaHero(data) {
+            const hero = document.getElementById("eta-hero");
+
+            // 1. Prefer server-computed live ETA (from Google Distance Matrix)
+            if (data.liveETA && data.liveDistance && data.liveDurationValue) {
+                showEta(data.liveETA, data.liveDistance, data.liveDurationValue);
+                return;
+            }
+
+            // 2. Fallback: estimate from expectedRoute + currentLocation
+            if (data.currentLocation && data.expectedRoute && data.expectedRoute.length > 1) {
+                const est = estimateEtaFromRoute(data.currentLocation, data.expectedRoute, data.mode || 'walking');
+                if (est) {
+                    showEta(est.textLabel, est.distanceLabel, est.durationSeconds);
+                    return;
+                }
+            }
+
+            // 3. Fallback: straight-line estimate if we at least have destination coords
+            if (data.currentLocation && data.destinationCoords) {
+                const dMeters = haversineMeters(
+                    data.currentLocation.lat, data.currentLocation.lng,
+                    data.destinationCoords.lat, data.destinationCoords.lng
+                );
+                const mode = data.mode || 'walking';
+                // walking ~5 km/h ≈ 1.4 m/s; driving in city ~7 m/s
+                const speed = mode === 'driving' ? 7 : 1.4;
+                const seconds = Math.round(dMeters / speed);
+                showEta(secondsToLabel(seconds), metersToDistanceLabel(dMeters), seconds);
+                return;
+            }
+
+            // 4. No data yet
+            hero.style.display = "none";
+        }
+
+        function showEta(textLabel, distanceLabel, durationSeconds) {
+            const hero = document.getElementById("eta-hero");
+            const arrivalDate = new Date(Date.now() + durationSeconds * 1000);
+            const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+            document.getElementById("etaMainText").innerText = textLabel;
+            document.getElementById("etaDistance").innerText = distanceLabel;
+            document.getElementById("etaArrivalTime").innerText = arrivalStr;
+
+            // Color the hero based on duration (long duration → warn)
+            hero.classList.remove('warn', 'risk');
+            if (durationSeconds > 45 * 60) hero.classList.add('warn');
+            if (currentSessionData?.status === 'RISK') { hero.classList.remove('warn'); hero.classList.add('risk'); }
+
+            hero.style.display = "block";
+        }
+
+        function estimateEtaFromRoute(current, route, mode) {
+            try {
+                // Find closest point on route to current location, then sum remaining distance
+                let closestIdx = 0, minDist = Infinity;
+                for (let i = 0; i < route.length; i++) {
+                    const d = haversineMeters(current.lat, current.lng, route[i].lat, route[i].lng);
+                    if (d < minDist) { minDist = d; closestIdx = i; }
+                }
+                let remaining = 0;
+                for (let i = closestIdx; i < route.length - 1; i++) {
+                    remaining += haversineMeters(route[i].lat, route[i].lng, route[i + 1].lat, route[i + 1].lng);
+                }
+                // Also add the gap from current location to the closest route point
+                remaining += minDist;
+
+                const speed = mode === 'driving' ? 7 : 1.4; // m/s
+                const seconds = Math.round(remaining / speed);
+                return {
+                    textLabel: secondsToLabel(seconds),
+                    distanceLabel: metersToDistanceLabel(remaining),
+                    durationSeconds: seconds
+                };
+            } catch { return null; }
+        }
+
+        function haversineMeters(lat1, lng1, lat2, lng2) {
+            const R = 6371000;
+            const toRad = x => x * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function secondsToLabel(sec) {
+            if (sec < 60) return `${sec} sec`;
+            const min = Math.round(sec / 60);
+            if (min < 60) return `${min} min`;
+            const h = Math.floor(min / 60), m = min % 60;
+            return m === 0 ? `${h} hr` : `${h} hr ${m} min`;
+        }
+
+        function metersToDistanceLabel(m) {
+            if (m < 1000) return `${Math.round(m)} m`;
+            return `${(m / 1000).toFixed(1)} km`;
+        }
+
+        /* ────────────────────────────────────────────
+           MAP UPDATES — FIXED: truly live
+           ──────────────────────────────────────────── */
+        function updateMap(data) {
+            if (!map) return;
+
+            // Expected route polyline
+            if (data.expectedRoute && data.expectedRoute.length > 0) {
+                expectedPathLine.setPath(data.expectedRoute.map(p => ({ lat: p.lat, lng: p.lng })));
+            }
+
+            // User path history
+            if (data.pathHistory && data.pathHistory.length > 0) {
+                actualPathLine.setPath(data.pathHistory.map(p => ({ lat: p.lat, lng: p.lng })));
+            }
+
+            // Current user location — this is the key live-tracking update
+            if (data.currentLocation) {
                 const pos = { lat: data.currentLocation.lat, lng: data.currentLocation.lng };
-                userMarker.setPosition(pos);
-                if (data.pathHistory) actualPathLine.setPath(data.pathHistory.map(p => ({ lat: p.lat, lng: p.lng })));
-                if (data.expectedRoute) expectedPathLine.setPath(data.expectedRoute.map(p => ({ lat: p.lat, lng: p.lng })));
-                if (!lastPingTime) map.setCenter(pos);
-                lastPingTime = Date.now();
+                const prevLoc = lastLocation;
+
+                // Detect if the location actually changed
+                const locChanged = !prevLoc || prevLoc[0] !== pos.lat || prevLoc[1] !== pos.lng;
+
+                // Create marker the first time we receive a real ping
+                if (!userMarker) {
+                    userMarker = new google.maps.Marker({
+                        position: pos, map,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE, scale: 10,
+                            fillColor: "#38bdf8", fillOpacity: 1,
+                            strokeWeight: 3, strokeColor: "#ffffff"
+                        },
+                        title: "Current location"
+                    });
+                    // Center and zoom in on first real location
+                    map.setCenter(pos);
+                    map.setZoom(15);
+                } else {
+                    userMarker.setPosition(pos);
+                    // If follow mode is on, keep the map centered on the user as they move
+                    if (followMode && locChanged) {
+                        map.panTo(pos);
+                    }
+                }
+
                 lastLocation = [pos.lat, pos.lng];
+                lastPingTime = Date.now();
+                hasEverReceivedLocation = true;
 
                 // Fetch nearby police on first location
                 if (!nearbyPoliceCache) fetchNearbyPolice(pos.lat, pos.lng);
             }
 
             // Destination marker
-            if (data.destinationCoords && map && !destMarker) {
+            if (data.destinationCoords && !destMarker) {
                 destMarker = new google.maps.Marker({
                     position: data.destinationCoords, map,
                     icon: {
                         path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW, scale: 6,
                         fillColor: "#a78bfa", fillOpacity: 1,
                         strokeWeight: 2, strokeColor: "#ffffff"
-                    }
+                    },
+                    title: data.destination || "Destination"
                 });
-            }
 
-            setStatusChip(data);
+                // If we haven't received a location yet, at least center on destination
+                if (!hasEverReceivedLocation) {
+                    map.setCenter(data.destinationCoords);
+                    map.setZoom(13);
+                }
+            }
         }
 
+        function toggleFollowMode() {
+            followMode = !followMode;
+            updateFollowButton();
+            if (followMode && lastLocation && map) {
+                map.panTo({ lat: lastLocation[0], lng: lastLocation[1] });
+                map.setZoom(15);
+                showToast("Following live location");
+            } else if (followMode) {
+                showToast("Waiting for location signal…");
+            } else {
+                showToast("Free pan mode");
+            }
+        }
+
+        function updateFollowButton() {
+            const btn = document.getElementById('btn-follow');
+            if (!btn) return;
+            btn.classList.toggle('active', followMode);
+            btn.title = followMode ? "Following user (tap to free pan)" : "Tap to follow user";
+        }
+
+        /* ────────────────────────────────────────────
+           STATUS + ALERT
+           ──────────────────────────────────────────── */
         function updateTimeIndicator(safetyScore) {
             const el = document.getElementById('time-indicator');
             const hour = safetyScore?.departureHour ?? new Date().getHours();
-            const label = safetyScore?.timeLabel || getTimeLabel(hour);
 
-            let icon, cls, riskText;
+            let icon, cls, label, helper;
             if (hour >= 22 || hour < 5) {
-                icon = '🌙'; cls = 'night'; riskText = 'Elevated risk level';
+                icon = '🌙'; cls = 'night'; label = 'late night'; helper = "Stay extra alert";
             } else if (hour >= 19 || hour < 6) {
-                icon = '🌆'; cls = 'evening'; riskText = 'Moderate risk level';
+                icon = '🌆'; cls = 'evening'; label = 'evening'; helper = "Keep someone informed";
             } else {
-                icon = '☀️'; cls = 'day'; riskText = 'Standard risk level';
+                icon = '☀️'; cls = 'day'; label = 'daytime'; helper = "Normal conditions";
             }
 
             el.className = `time-indicator ${cls}`;
-            el.innerHTML = `<span class="time-icon">${icon}</span><span>${label} travel —</span><span class="time-label">${riskText}</span>`;
-        }
-
-        function getTimeLabel(h) {
-            if (h >= 22 || h < 5) return "Late night";
-            if (h >= 19) return "Evening";
-            if (h >= 6) return "Daytime";
-            return "Early morning";
+            el.innerHTML = `<span class="time-icon">${icon}</span>
+                <span>Traveling during</span>
+                <span class="time-label">${label}</span>
+                <span style="margin-left:auto;opacity:0.7;font-size:11px;">${helper}</span>`;
         }
 
         function setStatusChip(data) {
             const chip = document.getElementById("status-chip");
             const lbl = document.getElementById("status-label");
             const banner = document.getElementById("alert-banner");
-            let cls = "status-nosignal", label = data.status || "NO SIGNAL";
+            let cls = "status-nosignal", label = "Connecting…";
 
-            if (data.status === "ACTIVE" || data.status === "SAFE") { cls = "status-safe"; label = "Safe"; }
-            else if (data.status === "RISK" || data.status === "ALERT") { cls = "status-risk"; label = "Alert"; }
-            else if (data.status === "NO_SIGNAL") { cls = "status-nosignal"; label = "No signal"; }
-            else if (data.status === "AWAITING") { cls = "status-nosignal"; label = "Awaiting"; }
-            else if (data.status === "NOT_FOUND") { cls = "status-nosignal"; label = "Not found"; }
-            else if (data.status === "OFFLINE") { cls = "status-nosignal"; label = "Offline"; }
-            else if (data.status === "WAITING") { cls = "status-nosignal"; label = "Waiting"; }
+            if (data.status === "ACTIVE" || data.status === "SAFE") { cls = "status-safe"; label = "On track"; }
+            else if (data.status === "RISK" || data.status === "ALERT") { cls = "status-risk"; label = "Needs attention"; }
+            else if (data.status === "NO_SIGNAL") { cls = "status-nosignal"; label = "Signal lost"; }
+            else if (data.status === "AWAITING") { cls = "status-nosignal"; label = "Connecting…"; }
+            else if (data.status === "NOT_FOUND") { cls = "status-nosignal"; label = "Trip not found"; }
+            else if (data.status === "OFFLINE") { cls = "status-nosignal"; label = "Reconnecting…"; }
+            else if (data.status === "WAITING") { cls = "status-nosignal"; label = "Waiting…"; }
 
             chip.className = `status-chip ${cls}`;
             lbl.innerText = label;
@@ -1245,23 +1544,23 @@
             }
         }
 
-        /* ═══════════════════════════════════════════
+        /* ────────────────────────────────────────────
            ACTIONS
-           ═══════════════════════════════════════════ */
+           ──────────────────────────────────────────── */
         async function fetchNearbyPolice(lat, lng) {
             const desc = document.getElementById("callPoliceDesc");
-            desc.innerText = "Finding nearest station…";
+            desc.innerText = "Finding closest station…";
             try {
                 const r = await fetch(`/nearby-police?lat=${lat}&lng=${lng}`);
                 const data = await r.json();
                 nearbyPoliceCache = data;
-                const distKm = data.distance ? (data.distance / 1000).toFixed(1) + 'km' : '';
+                const distKm = data.distance ? (data.distance / 1000).toFixed(1) + ' km away' : '';
                 desc.innerText = data.fallback
-                    ? `Emergency: ${data.number}`
+                    ? `Emergency helpline ${data.number}`
                     : `${data.name}${distKm ? ' · ' + distKm : ''}`;
             } catch {
                 nearbyPoliceCache = { fallback: true, number: "112", name: "Emergency Services" };
-                desc.innerText = "Emergency: 112";
+                desc.innerText = "Emergency helpline 112";
             }
         }
 
@@ -1270,19 +1569,9 @@
                 window.location.href = `tel:${nearbyPoliceCache.number}`;
             } else if (lastLocation) {
                 fetchNearbyPolice(lastLocation[0], lastLocation[1]);
-                showToast("Finding nearest police station…");
+                showToast("Finding nearest station…");
             } else {
                 window.location.href = 'tel:112';
-            }
-        }
-
-        function recenterMap() {
-            if (lastLocation && map) {
-                map.panTo({ lat: lastLocation[0], lng: lastLocation[1] });
-                map.setZoom(15);
-                showToast("Recentered");
-            } else {
-                showToast("No GPS yet");
             }
         }
 
@@ -1295,7 +1584,7 @@
             if (lastLocation) {
                 window.open(`https://www.google.com/maps?q=${lastLocation[0]},${lastLocation[1]}`, '_blank');
             } else {
-                showToast("No location yet");
+                showToast("No location yet — waiting for signal");
             }
         }
 
@@ -1303,11 +1592,11 @@
             if (lastLocation) {
                 const t = `${lastLocation[0]}, ${lastLocation[1]}`;
                 navigator.clipboard?.writeText(t).then(
-                    () => showToast("GPS copied"),
+                    () => showToast("Location copied"),
                     () => showToast(t)
                 );
             } else {
-                showToast("No location yet");
+                showToast("No location yet — waiting for signal");
             }
         }
 
@@ -1323,11 +1612,13 @@
 
         function updateTimer() {
             if (!lastPingTime) {
-                document.getElementById("lastUpdated").innerText = "— —";
+                document.getElementById("lastUpdated").innerText = "waiting";
                 return;
             }
             const s = Math.floor((Date.now() - lastPingTime) / 1000);
-            document.getElementById("lastUpdated").innerText = s < 60 ? `${s}s ago` : `${Math.floor(s / 60)}m ago`;
+            if (s < 10) document.getElementById("lastUpdated").innerText = "just now";
+            else if (s < 60) document.getElementById("lastUpdated").innerText = `${s}s ago`;
+            else document.getElementById("lastUpdated").innerText = `${Math.floor(s / 60)}m ago`;
         }
 
         function showToast(msg, ms = 2400) {
@@ -1337,9 +1628,9 @@
             showToast._t = setTimeout(() => t.classList.remove('show'), ms);
         }
 
-        /* ═══════════════════════════════════════════
+        /* ────────────────────────────────────────────
            SHEET DRAG
-           ═══════════════════════════════════════════ */
+           ──────────────────────────────────────────── */
         (function () {
             const handle = document.getElementById('sheet-handle');
             const sheet = document.getElementById('sheet');
@@ -1359,25 +1650,29 @@
             });
         })();
 
-        /* ═══════════════════════════════════════════
+        /* ────────────────────────────────────────────
            HASH CHANGE — live session switching
-           ═══════════════════════════════════════════ */
+           ──────────────────────────────────────────── */
         window.addEventListener('hashchange', () => {
             lastPingTime = null;
             lastLocation = null;
             nearbyPoliceCache = null;
             currentSessionData = null;
+            hasEverReceivedLocation = false;
+            if (userMarker) { userMarker.setMap(null); userMarker = null; }
             if (destMarker) { destMarker.setMap(null); destMarker = null; }
+            if (expectedPathLine) expectedPathLine.setPath([]);
+            if (actualPathLine) actualPathLine.setPath([]);
             fetchData();
         });
 
-        /* ═══════════════════════════════════════════
-           BOOT
-           ═══════════════════════════════════════════ */
+        /* ────────────────────────────────────────────
+           BOOT — poll every 3 seconds for snappier live tracking
+           ──────────────────────────────────────────── */
         window.onload = async () => {
             await loadGoogleMaps();
             fetchData();
-            setInterval(fetchData, 5000);
+            setInterval(fetchData, 3000);   // was 5s — faster for live feel
             setInterval(updateTimer, 1000);
         };
     </script>
